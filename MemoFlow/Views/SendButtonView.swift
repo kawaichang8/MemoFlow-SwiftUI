@@ -2,7 +2,7 @@
 //  SendButtonView.swift
 //  MemoFlow
 //
-//  送信ボタン - 極限ミニマルの紙飛行機アイコン
+//  送信ボタン - 「流してスッキリ」の紙飛行機アイコン
 //
 
 import SwiftUI
@@ -16,26 +16,34 @@ struct SendButtonView: View {
     @State private var dragOffset: CGFloat = 0
     @State private var pulseScale: CGFloat = 1.0
     @State private var iconRotation: Double = 0
+    @State private var flyAwayOffset: CGFloat = 0
+    @State private var flyAwayOpacity: Double = 1.0
     
-    // 大きなボタンサイズ
     private let buttonSize: CGFloat = 80
     private let swipeThreshold: CGFloat = 60
     
     var body: some View {
         ZStack {
-            // パルスリング（送信可能時）
+            // パルスリング
             if isEnabled && !isSending {
                 Circle()
-                    .stroke(buttonColor.opacity(0.15), lineWidth: 2)
-                    .frame(width: buttonSize + 24, height: buttonSize + 24)
+                    .stroke(buttonColor.opacity(0.12), lineWidth: 2)
+                    .frame(width: buttonSize + 28, height: buttonSize + 28)
                     .scaleEffect(pulseScale)
                     .opacity(Double(2.0 - pulseScale))
+                
+                Circle()
+                    .stroke(buttonColor.opacity(0.08), lineWidth: 1.5)
+                    .frame(width: buttonSize + 48, height: buttonSize + 48)
+                    .scaleEffect(pulseScale * 0.9)
+                    .opacity(Double(2.0 - pulseScale) * 0.5)
             }
             
             // メインボタン
             Button(action: {
                 guard isEnabled && !isSending else { return }
                 HapticManager.shared.mediumTap()
+                triggerFlyAnimation()
                 onSend()
             }) {
                 ZStack {
@@ -43,17 +51,21 @@ struct SendButtonView: View {
                     Circle()
                         .fill(buttonBackgroundColor)
                         .shadow(
-                            color: isEnabled && !isSending ? buttonColor.opacity(0.25) : .clear,
-                            radius: 16,
-                            y: 8
+                            color: isEnabled && !isSending ? buttonColor.opacity(0.3) : .clear,
+                            radius: 20,
+                            y: 10
                         )
                     
                     // 紙飛行機アイコン
                     buttonIcon
-                        .font(.system(size: 32, weight: .semibold))
+                        .font(.system(size: 34, weight: .semibold))
                         .foregroundStyle(buttonForegroundColor)
                         .rotationEffect(.degrees(isSending ? iconRotation : -45))
-                        .offset(x: isSending ? 0 : 2, y: isSending ? 0 : -2)
+                        .offset(
+                            x: isSending ? 0 : 2 + flyAwayOffset * 0.3,
+                            y: isSending ? 0 : -2 - flyAwayOffset
+                        )
+                        .opacity(flyAwayOpacity)
                 }
                 .frame(width: buttonSize, height: buttonSize)
             }
@@ -63,7 +75,7 @@ struct SendButtonView: View {
             .gesture(swipeGesture)
             .animation(.spring(response: 0.25, dampingFraction: 0.75), value: dragOffset)
         }
-        .frame(height: buttonSize + 28)
+        .frame(height: buttonSize + 52)
         .onAppear {
             startPulseAnimation()
         }
@@ -71,7 +83,7 @@ struct SendButtonView: View {
             if newValue {
                 startLoadingAnimation()
             } else {
-                iconRotation = 0
+                resetAnimations()
             }
         }
     }
@@ -117,15 +129,28 @@ struct SendButtonView: View {
     // MARK: - Animations
     
     private func startPulseAnimation() {
-        withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: false)) {
-            pulseScale = 1.6
+        withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: false)) {
+            pulseScale = 1.7
         }
     }
     
     private func startLoadingAnimation() {
-        withAnimation(.linear(duration: 0.8).repeatForever(autoreverses: false)) {
+        withAnimation(.linear(duration: 0.7).repeatForever(autoreverses: false)) {
             iconRotation = 360
         }
+    }
+    
+    private func triggerFlyAnimation() {
+        withAnimation(.easeOut(duration: 0.3)) {
+            flyAwayOffset = 50
+            flyAwayOpacity = 0.0
+        }
+    }
+    
+    private func resetAnimations() {
+        iconRotation = 0
+        flyAwayOffset = 0
+        flyAwayOpacity = 1.0
     }
     
     // MARK: - Swipe Gesture
@@ -134,12 +159,10 @@ struct SendButtonView: View {
         DragGesture()
             .onChanged { value in
                 guard isEnabled && !isSending else { return }
-                // 上方向のみ
                 if value.translation.height < 0 {
-                    dragOffset = value.translation.height * 0.4
+                    dragOffset = value.translation.height * 0.35
                     
-                    // スワイプ途中で触覚フィードバック
-                    if value.translation.height < -swipeThreshold * 0.7 {
+                    if value.translation.height < -swipeThreshold * 0.6 {
                         HapticManager.shared.lightTap()
                     }
                 }
@@ -148,8 +171,8 @@ struct SendButtonView: View {
                 guard isEnabled && !isSending else { return }
                 
                 if value.translation.height < -swipeThreshold {
-                    // スワイプで送信
                     HapticManager.shared.mediumTap()
+                    triggerFlyAnimation()
                     onSend()
                 }
                 
@@ -162,8 +185,8 @@ struct SendButtonView: View {
 struct SendButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.65), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.88 : 1.0)
+            .animation(.spring(response: 0.18, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }
 
@@ -189,7 +212,7 @@ struct SendButtonStyle: ButtonStyle {
         )
     }
     .padding()
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
 }
 
 #Preview("Dark Mode") {
@@ -207,6 +230,6 @@ struct SendButtonStyle: ButtonStyle {
         )
     }
     .padding()
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
     .preferredColorScheme(.dark)
 }

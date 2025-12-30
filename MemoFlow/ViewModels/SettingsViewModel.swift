@@ -27,6 +27,16 @@ final class SettingsViewModel {
         set { settings.tagAutoMode = newValue }
     }
     
+    var templateSuggestionMode: TemplateSuggestionMode {
+        get { settings.templateSuggestionMode }
+        set { settings.templateSuggestionMode = newValue }
+    }
+    
+    var localAIEnabled: Bool {
+        get { settings.localAIEnabled }
+        set { settings.localAIEnabled = newValue }
+    }
+    
     var hapticEnabled: Bool {
         get { settings.hapticEnabled }
         set { settings.hapticEnabled = newValue }
@@ -40,6 +50,34 @@ final class SettingsViewModel {
     var appearanceMode: Int {
         get { settings.appearanceMode }
         set { settings.appearanceMode = newValue }
+    }
+    
+    var appTheme: AppTheme {
+        get { settings.appTheme }
+        set { settings.appTheme = newValue }
+    }
+    
+    var appFontSize: AppFontSize {
+        get { settings.appFontSize }
+        set { settings.appFontSize = newValue }
+    }
+    
+    // MARK: - Streak Settings
+    
+    var streakEnabled: Bool {
+        get { settings.streakEnabled }
+        set { settings.streakEnabled = newValue }
+    }
+    
+    var streakReminderEnabled: Bool {
+        get { settings.streakReminderEnabled }
+        set {
+            settings.streakReminderEnabled = newValue
+            if newValue {
+                StreakManager.shared.requestNotificationPermission()
+                StreakManager.shared.scheduleReminderNotification()
+            }
+        }
     }
     
     // MARK: - Notion Settings
@@ -97,8 +135,24 @@ final class SettingsViewModel {
         set { settings.reflectAPIKey = newValue }
     }
     
+    var reflectGraphId: String {
+        get { settings.reflectGraphId }
+        set { settings.reflectGraphId = newValue }
+    }
+    
     var isReflectConfigured: Bool {
         settings.isReflectConfigured
+    }
+    
+    // MARK: - Email Settings
+    
+    var emailToSelfAddress: String {
+        get { settings.emailToSelfAddress }
+        set { settings.emailToSelfAddress = newValue }
+    }
+    
+    var isEmailConfigured: Bool {
+        settings.isEmailConfigured
     }
     
     // MARK: - Connection Test State
@@ -114,6 +168,10 @@ final class SettingsViewModel {
     var isTestingSlack = false
     var slackTestResult: Bool?
     var slackTestError: String?
+    
+    var isTestingReflect = false
+    var reflectTestResult: Bool?
+    var reflectTestError: String?
     
     // MARK: - Methods
     
@@ -166,6 +224,23 @@ final class SettingsViewModel {
         }
         
         isTestingSlack = false
+    }
+    
+    /// Reflect接続テスト
+    func testReflectConnection() async {
+        isTestingReflect = true
+        reflectTestResult = nil
+        reflectTestError = nil
+        
+        do {
+            let success = try await ReflectService.shared.testConnection()
+            reflectTestResult = success
+        } catch {
+            reflectTestResult = false
+            reflectTestError = error.localizedDescription
+        }
+        
+        isTestingReflect = false
     }
     
     /// 設定をリセット

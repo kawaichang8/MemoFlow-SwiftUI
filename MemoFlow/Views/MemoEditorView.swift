@@ -3,6 +3,7 @@
 //  MemoFlow
 //
 //  巨大テキストエディタ - 究極ミニマルの入力エリア
+//  カスタムテーマ & フォントサイズ対応
 //
 
 import SwiftUI
@@ -14,9 +15,17 @@ struct MemoEditorView: View {
     
     @Environment(\.colorScheme) private var colorScheme
     
-    // 巨大フォント設定
-    private let fontSize: CGFloat = 26
-    private let lineSpacing: CGFloat = 12
+    // ThemeManagerから設定を取得
+    private var themeManager: ThemeManager { ThemeManager.shared }
+    
+    // フォント設定
+    private var fontSize: CGFloat {
+        themeManager.fontSize.mainTextSize
+    }
+    
+    private var lineSpacing: CGFloat {
+        themeManager.fontSize.lineSpacing
+    }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -24,7 +33,7 @@ struct MemoEditorView: View {
             if text.isEmpty {
                 Text(placeholder)
                     .font(.system(size: fontSize, weight: .light, design: .rounded))
-                    .foregroundStyle(Color.textTertiary.opacity(0.5))
+                    .foregroundStyle(themeManager.placeholderColor)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 14)
                     .allowsHitTesting(false)
@@ -33,6 +42,7 @@ struct MemoEditorView: View {
             // テキストエディタ（巨大フォント、広い行間）
             TextEditor(text: $text)
                 .font(.system(size: fontSize, weight: .regular, design: .default))
+                .foregroundStyle(themeManager.textColor)
                 .lineSpacing(lineSpacing)
                 .scrollContentBackground(.hidden)
                 .background(.clear)
@@ -56,7 +66,7 @@ struct MemoEditorView: View {
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground.ignoresSafeArea()
+        ThemeManager.shared.backgroundColor.ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
@@ -66,12 +76,12 @@ struct MemoEditorView: View {
     }
 }
 
-#Preview("With Text") {
+#Preview("With Text - Large Font") {
     @Previewable @State var text = "これはサンプルテキストです。\n\n複数行にも対応しています。\n長い文章でも美しく表示されます。"
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground.ignoresSafeArea()
+        ThemeManager.shared.backgroundColor.ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
@@ -79,14 +89,35 @@ struct MemoEditorView: View {
         )
         .padding()
     }
+    .onAppear {
+        ThemeManager.shared.fontSize = .large
+    }
 }
 
-#Preview("Dark Mode") {
+#Preview("Sepia Theme") {
+    @Previewable @State var text = "セピアテーマのプレビュー"
+    @Previewable @FocusState var focused: Bool
+    
+    ZStack {
+        Color(red: 0.96, green: 0.94, blue: 0.88).ignoresSafeArea()
+        MemoEditorView(
+            text: $text,
+            isFocused: $focused,
+            placeholder: "なんでも"
+        )
+        .padding()
+    }
+    .onAppear {
+        ThemeManager.shared.currentTheme = .sepia
+    }
+}
+
+#Preview("Dark Theme") {
     @Previewable @State var text = ""
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground.ignoresSafeArea()
+        Color(white: 0.05).ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
@@ -95,4 +126,7 @@ struct MemoEditorView: View {
         .padding()
     }
     .preferredColorScheme(.dark)
+    .onAppear {
+        ThemeManager.shared.currentTheme = .dark
+    }
 }

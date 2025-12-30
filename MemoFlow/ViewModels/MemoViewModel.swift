@@ -72,10 +72,40 @@ final class MemoViewModel {
         !isEmpty && sendingState != .sending
     }
     
+    // MARK: - Local AI Status
+    
+    /// ローカルAI処理が有効か
+    var isLocalAIEnabled: Bool {
+        settings.localAIEnabled
+    }
+    
+    /// タグ提案がローカルAIで処理されたか
+    var wasProcessedByLocalAI: Bool {
+        TagSuggestionService.shared.wasProcessedLocally
+    }
+    
+    // MARK: - Template Detection
+    
+    /// 現在のテンプレート提案
+    var templateSuggestion: TemplateSuggestion {
+        templateDetectionService.currentSuggestion
+    }
+    
+    /// テンプレート提案が表示可能か
+    var hasTemplateSuggestion: Bool {
+        templateSuggestion.isConfident && 
+        templateSuggestion.type != .unknown &&
+        settings.templateSuggestionMode != .off
+    }
+    
+    /// テンプレート提案を無視フラグ
+    var isTemplateSuggestionDismissed: Bool = false
+    
     // MARK: - Services
     private let speechService = SpeechService()
     private let haptic = HapticManager.shared
     private let settings = AppSettings.shared
+    private let templateDetectionService = TemplateDetectionService.shared
     
     // タグ提案用
     private var debounceTask: Task<Void, Never>?
@@ -262,8 +292,55 @@ final class MemoViewModel {
         // テキストが変わったら削除タグをクリア
         dismissedTagNames.removeAll()
         
+        // テンプレート提案リセット
+        isTemplateSuggestionDismissed = false
+        
         // タグ提案を更新
         suggestTags(for: text)
+        
+        // テンプレート判別を更新
+        detectTemplate(for: text)
+    }
+    
+    // MARK: - Template Detection
+    
+    /// テンプレート判別を実行
+    private func detectTemplate(for text: String) {
+        templateDetectionService.detectTemplate(for: text)
+        
+        // 自動切り替えモードの場合
+        if settings.templateSuggestionMode == .autoSwitch {
+            applyTemplateSuggestionIfNeeded()
+        }
+    }
+    
+    /// テンプレート提案を自動適用
+    private func applyTemplateSuggestionIfNeeded() {
+        let suggestion = templateDetectionService.currentSuggestion
+        guard suggestion.isConfident && !isTemplateSuggestionDismissed else { return }
+        
+        // 自動切り替え
+        selectedDestination = suggestion.suggestedDestination
+        print("🎯 [Template] 自動切り替え: \(suggestion.suggestedDestination.displayName)")
+    }
+    
+    /// テンプレート提案を採用
+    func acceptTemplateSuggestion() {
+        guard hasTemplateSuggestion else { return }
+        
+        selectedDestination = templateSuggestion.suggestedDestination
+        isTemplateSuggestionDismissed = true
+        haptic.lightTap()
+        
+        print("🎯 [Template] 提案採用: \(templateSuggestion.type.displayName) → \(templateSuggestion.suggestedDestination.displayName)")
+    }
+    
+    /// テンプレート提案を無視
+    func dismissTemplateSuggestion() {
+        isTemplateSuggestionDismissed = true
+        haptic.lightTap()
+        
+        print("🎯 [Template] 提案無視")
     }
     
     // MARK: - Tag Suggestion
@@ -522,8 +599,11 @@ final class MemoViewModel {
         
         switch result {
         case .success:
-            // 履歴に保存
-            await MemoSendService.shared.saveToHistory(memo)
+            // 履歴に保存（SwiftData）
+            HistoryService.shared.saveToHistory(memo)
+            
+            // ストリーク記録
+            StreakManager.shared.recordMemoSent()
             
             sendingState = .success
             haptic.success()
@@ -545,6 +625,10 @@ final class MemoViewModel {
         dismissedTagNames.removeAll()
         suggestedTags = []
         debounceTask?.cancel()
+        
+        // テンプレート提案リセット
+        templateDetectionService.clearSuggestion()
+        isTemplateSuggestionDismissed = false
     }
     
     /// エラーをクリア

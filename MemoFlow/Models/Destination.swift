@@ -14,6 +14,7 @@ enum Destination: String, Codable, CaseIterable, Identifiable {
     case todoist = "todoist"
     case slack = "slack"
     case reflect = "reflect"
+    case emailToSelf = "email_to_self"
     case taskTemplate = "task_template"
     case noteTemplate = "note_template"
     
@@ -30,6 +31,8 @@ enum Destination: String, Codable, CaseIterable, Identifiable {
             return "Slack"
         case .reflect:
             return "Reflect"
+        case .emailToSelf:
+            return "Email to Self"
         case .taskTemplate:
             return "タスク"
         case .noteTemplate:
@@ -48,6 +51,8 @@ enum Destination: String, Codable, CaseIterable, Identifiable {
             return "number.square"
         case .reflect:
             return "brain.head.profile"
+        case .emailToSelf:
+            return "envelope"
         case .taskTemplate:
             return "checklist"
         case .noteTemplate:
@@ -63,11 +68,13 @@ enum Destination: String, Codable, CaseIterable, Identifiable {
         case .todoist:
             return .red
         case .slack:
-            return Color(red: 0.32, green: 0.71, blue: 0.67) // Slackのブランドカラー（緑系）
+            return Color(red: 0.32, green: 0.71, blue: 0.67)
         case .reflect:
             return .purple
-        case .taskTemplate:
+        case .emailToSelf:
             return .blue
+        case .taskTemplate:
+            return .cyan
         case .noteTemplate:
             return .green
         }
@@ -78,6 +85,8 @@ enum Destination: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .notionInbox, .todoist, .slack, .reflect:
             return true
+        case .emailToSelf:
+            return true // メールアドレス設定が必要
         case .taskTemplate, .noteTemplate:
             return false
         }

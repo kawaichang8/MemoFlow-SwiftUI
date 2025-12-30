@@ -36,8 +36,10 @@ actor MemoSendService {
                 try await SlackService.shared.addMemo(memo)
                 
             case .reflect:
-                // Reflect API（将来実装）
-                try await sendToReflect(memo)
+                try await ReflectService.shared.addMemo(memo)
+                
+            case .emailToSelf:
+                try await sendEmail(memo)
                 
             case .taskTemplate:
                 // ローカルタスクテンプレート保存
@@ -56,10 +58,10 @@ actor MemoSendService {
     
     // MARK: - Private Methods
     
-    private func sendToReflect(_ memo: Memo) async throws {
-        // Reflect APIは将来実装
-        // 現在はローカル保存にフォールバック
-        try await saveLocally(memo, type: "reflect")
+    /// メール送信（MainActorで実行）
+    @MainActor
+    private func sendEmail(_ memo: Memo) async throws {
+        try await EmailService.shared.addMemo(memo)
     }
     
     private func saveAsTaskTemplate(_ memo: Memo) async throws {

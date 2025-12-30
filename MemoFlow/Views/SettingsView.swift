@@ -10,19 +10,31 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = SettingsViewModel()
+    @State private var showHelp = false
     
     var body: some View {
         NavigationStack {
             List {
-                // 外観設定
+                // テーマ設定
                 Section {
-                    Picker("外観", selection: $viewModel.appearanceMode) {
-                        Text("システムに従う").tag(0)
-                        Text("ライト").tag(1)
-                        Text("ダーク").tag(2)
+                    // テーマ選択
+                    ThemePicker(selectedTheme: $viewModel.appTheme)
+                    
+                    // フォントサイズ
+                    Picker("文字サイズ", selection: $viewModel.appFontSize) {
+                        ForEach(AppFontSize.allCases) { size in
+                            Text(size.displayName)
+                                .tag(size)
+                        }
                     }
+                    .pickerStyle(.segmented)
                 } header: {
-                    Text("外観")
+                    Text("テーマ & フォント")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("🎨 テーマ: \(viewModel.appTheme.description)")
+                        Text("📝 文字サイズ: \(viewModel.appFontSize.displayName)")
+                    }
                 }
                 
                 // 一般設定
@@ -42,16 +54,37 @@ struct SettingsView: View {
                                 .tag(mode)
                         }
                     }
+                    
+                    // テンプレート判別モード
+                    Picker("AIテンプレート判別", selection: $viewModel.templateSuggestionMode) {
+                        ForEach(TemplateSuggestionMode.allCases, id: \.self) { mode in
+                            Text(mode.displayName)
+                                .tag(mode)
+                        }
+                    }
                 } header: {
                     Text("一般")
                 } footer: {
-                    switch viewModel.tagAutoMode {
-                    case .autoAdopt:
-                        Text("💡 AIが認識したタグを自動で採用。不要なら×で削除。")
-                    case .suggestOnly:
-                        Text("💡 タグを提案表示。タップで採用、もう一度タップで削除。")
-                    case .off:
-                        Text("💡 タグ提案を表示しません。")
+                    VStack(alignment: .leading, spacing: 8) {
+                        // タグ提案の説明
+                        switch viewModel.tagAutoMode {
+                        case .autoAdopt:
+                            Text("🏷️ AIが認識したタグを自動で採用。不要なら×で削除。")
+                        case .suggestOnly:
+                            Text("🏷️ タグを提案表示。タップで採用。")
+                        case .off:
+                            Text("🏷️ タグ提案を表示しません。")
+                        }
+                        
+                        // テンプレート判別の説明
+                        switch viewModel.templateSuggestionMode {
+                        case .off:
+                            Text("📋 テンプレート判別を使用しません。")
+                        case .suggestOnly:
+                            Text("📋 入力内容から「タスク」か「ノート」かを判別し、バナーで送信先を提案。")
+                        case .autoSwitch:
+                            Text("📋 AIが自動で送信先を切り替えます。")
+                        }
                     }
                 }
                 
@@ -61,6 +94,101 @@ struct SettingsView: View {
                     Toggle("サウンド", isOn: $viewModel.soundEnabled)
                 } header: {
                     Text("フィードバック")
+                }
+                
+                // ストリーク設定
+                Section {
+                    Toggle(isOn: $viewModel.streakEnabled) {
+                        HStack {
+                            Image(systemName: "flame.fill")
+                                .foregroundStyle(.orange)
+                            Text("ストリーク表示")
+                        }
+                    }
+                    
+                    if viewModel.streakEnabled {
+                        Toggle(isOn: $viewModel.streakReminderEnabled) {
+                            HStack {
+                                Image(systemName: "bell.fill")
+                                    .foregroundStyle(.blue)
+                                Text("リマインダー通知")
+                            }
+                        }
+                        
+                        // 現在のストリーク情報
+                        HStack {
+                            Text("現在のストリーク")
+                            Spacer()
+                            HStack(spacing: 4) {
+                                Image(systemName: StreakManager.shared.streakIcon)
+                                    .foregroundStyle(.orange)
+                                Text("\(StreakManager.shared.currentStreak)日")
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                        
+                        HStack {
+                            Text("最長記録")
+                            Spacer()
+                            Text("\(StreakManager.shared.longestStreak)日")
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("総メモ数")
+                            Spacer()
+                            Text("\(StreakManager.shared.totalMemos)")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("ストリーク")
+                        Spacer()
+                        if StreakManager.shared.hasSentMemoToday {
+                            Label("今日完了", systemImage: "checkmark.circle.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.green)
+                        }
+                    }
+                } footer: {
+                    Text("毎日メモを送信して連続記録を伸ばそう！リマインダーをオンにすると、夜8時に今日のメモを送るよう通知します。")
+                }
+                
+                // ローカルAI設定
+                Section {
+                    Toggle(isOn: $viewModel.localAIEnabled) {
+                        HStack {
+                            Image(systemName: "brain.head.profile")
+                                .foregroundStyle(.purple)
+                            Text("ローカルAI優先")
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("Apple Intelligence")
+                        Spacer()
+                        if viewModel.localAIEnabled {
+                            Label("デバイス上", systemImage: "lock.shield.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.green)
+                        }
+                    }
+                } footer: {
+                    VStack(alignment: .leading, spacing: 6) {
+                        if viewModel.localAIEnabled {
+                            HStack(spacing: 4) {
+                                Image(systemName: "checkmark.shield.fill")
+                                    .foregroundStyle(.green)
+                                Text("タグ提案はデバイス上で処理されています")
+                            }
+                            .font(.caption)
+                            
+                            Text("🧠 高精度NLP（品詞解析・感情分析・固有表現抽出）でタグを提案。オフラインでも動作します。")
+                        } else {
+                            Text("💡 キーワードベースの軽量処理のみ。バッテリー消費を抑えます。")
+                        }
+                    }
                 }
                 
                 // Notion設定
@@ -184,8 +312,27 @@ struct SettingsView: View {
                         text: $viewModel.reflectAPIKey,
                         placeholder: "APIキーを入力"
                     )
+                    
+                    TextField("Graph ID", text: $viewModel.reflectGraphId)
+                        .textContentType(.none)
+                        .autocorrectionDisabled()
+                    
+                    if viewModel.isReflectConfigured {
+                        ConnectionTestButton(
+                            isLoading: viewModel.isTestingReflect,
+                            result: viewModel.reflectTestResult,
+                            error: viewModel.reflectTestError,
+                            onTest: {
+                                Task {
+                                    await viewModel.testReflectConnection()
+                                }
+                            }
+                        )
+                    }
                 } header: {
                     HStack {
+                        Image(systemName: "brain.head.profile")
+                            .foregroundStyle(.purple)
                         Text("Reflect")
                         Spacer()
                         if viewModel.isReflectConfigured {
@@ -194,6 +341,63 @@ struct SettingsView: View {
                                 .font(.caption)
                         }
                     }
+                } footer: {
+                    Text("Reflect の Settings > API から API キーを取得。Graph ID は URL (reflect.app/g/xxxxx) の xxxxx 部分です。Daily Note に追記されます。")
+                }
+                
+                // Email to Self設定
+                Section {
+                    TextField("メールアドレス", text: $viewModel.emailToSelfAddress)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                } header: {
+                    HStack {
+                        Image(systemName: "envelope")
+                            .foregroundStyle(.blue)
+                        Text("Email to Self")
+                        Spacer()
+                        if viewModel.isEmailConfigured {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                                .font(.caption)
+                        }
+                    }
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("メモを自分宛てにメール送信します。デバイスのメールアプリが起動します。")
+                        if !EmailService.shared.canSendEmail() {
+                            HStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.orange)
+                                Text("メール送信機能が利用できません")
+                            }
+                            .font(.caption)
+                        }
+                    }
+                }
+                
+                // ヘルプ & サポート
+                Section {
+                    Button {
+                        showHelp = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "questionmark.circle.fill")
+                                .foregroundStyle(.blue)
+                            Text("連携ガイド & ヘルプ")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } header: {
+                    Text("サポート")
+                } footer: {
+                    Text("各サービスの連携方法やトラブルシューティングを確認できます。")
                 }
                 
                 // リセット
@@ -227,6 +431,9 @@ struct SettingsView: View {
                         dismiss()
                     }
                 }
+            }
+            .sheet(isPresented: $showHelp) {
+                HelpView()
             }
         }
     }
@@ -285,6 +492,106 @@ struct ConnectionTestButton: View {
             }
         }
         .disabled(isLoading)
+    }
+}
+
+// MARK: - Theme Picker
+struct ThemePicker: View {
+    @Binding var selectedTheme: AppTheme
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("テーマ")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            
+            HStack(spacing: 12) {
+                ForEach(AppTheme.allCases) { theme in
+                    ThemeOption(
+                        theme: theme,
+                        isSelected: selectedTheme == theme,
+                        onTap: {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                selectedTheme = theme
+                            }
+                            HapticManager.shared.lightTap()
+                        }
+                    )
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+// MARK: - Theme Option
+struct ThemeOption: View {
+    let theme: AppTheme
+    let isSelected: Bool
+    let onTap: () -> Void
+    
+    @Environment(\.colorScheme) private var colorScheme
+    
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: 6) {
+                // プレビューサークル
+                ZStack {
+                    Circle()
+                        .fill(theme.previewColor)
+                        .frame(width: 44, height: 44)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(
+                                    isSelected ? Color.blue : Color(.systemGray4),
+                                    lineWidth: isSelected ? 3 : 1
+                                )
+                        )
+                        .shadow(
+                            color: theme == .dark ? .clear : .black.opacity(0.1),
+                            radius: 4,
+                            y: 2
+                        )
+                    
+                    Image(systemName: theme.iconName)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(theme == .dark ? .white : .black.opacity(0.7))
+                }
+                
+                // ラベル
+                Text(theme.displayName)
+                    .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? .primary : .secondary)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+        .scaleEffect(isSelected ? 1.05 : 1.0)
+        .animation(.spring(response: 0.2, dampingFraction: 0.7), value: isSelected)
+    }
+}
+
+// MARK: - Font Size Preview
+struct FontSizePreview: View {
+    let fontSize: AppFontSize
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("プレビュー")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            
+            Text("あいうえお ABC 123")
+                .font(.system(size: fontSize.mainTextSize))
+                .lineSpacing(fontSize.lineSpacing)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.systemGray6))
+                )
+        }
     }
 }
 

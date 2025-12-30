@@ -12,25 +12,104 @@ import AppIntents
 // MARK: - Widget Timeline Provider
 struct MemoFlowProvider: TimelineProvider {
     func placeholder(in context: Context) -> MemoFlowEntry {
-        MemoFlowEntry(date: Date())
+        MemoFlowEntry(date: Date(), streakData: StreakWidgetData.placeholder)
     }
     
     func getSnapshot(in context: Context, completion: @escaping (MemoFlowEntry) -> Void) {
-        completion(MemoFlowEntry(date: Date()))
+        let streakData = loadStreakData()
+        completion(MemoFlowEntry(date: Date(), streakData: streakData))
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<MemoFlowEntry>) -> Void) {
-        let entry = MemoFlowEntry(date: Date())
-        // 1時間ごとに更新（実際は静的なので頻繁な更新は不要）
-        let nextUpdate = Calendar.current.date(byAdding: .hour, value: 1, to: Date())!
+        let streakData = loadStreakData()
+        let entry = MemoFlowEntry(date: Date(), streakData: streakData)
+        // 15分ごとに更新（ストリーク表示のため）
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
+    }
+    
+    /// ストリークデータを読み込み（App Group共有UserDefaults）
+    private func loadStreakData() -> StreakWidgetData {
+        // App Groupを使う場合: UserDefaults(suiteName: "group.com.yourapp.memoflow")
+        let defaults = UserDefaults.standard
+        
+        let currentStreak = defaults.integer(forKey: "streak_current")
+        let longestStreak = defaults.integer(forKey: "streak_longest")
+        let totalMemos = defaults.integer(forKey: "streak_totalMemos")
+        let lastMemoDate = defaults.object(forKey: "streak_lastMemoDate") as? Date
+        
+        let hasSentToday: Bool
+        if let lastDate = lastMemoDate {
+            hasSentToday = Calendar.current.isDateInToday(lastDate)
+        } else {
+            hasSentToday = false
+        }
+        
+        return StreakWidgetData(
+            currentStreak: currentStreak,
+            longestStreak: longestStreak,
+            hasSentToday: hasSentToday,
+            totalMemos: totalMemos,
+            icon: streakIcon(for: currentStreak),
+            colorName: streakColorName(for: currentStreak)
+        )
+    }
+    
+    private func streakIcon(for streak: Int) -> String {
+        switch streak {
+        case 0: return "flame"
+        case 1...6: return "flame.fill"
+        case 7...29: return "flame.fill"
+        case 30...99: return "star.fill"
+        default: return "crown.fill"
+        }
+    }
+    
+    private func streakColorName(for streak: Int) -> String {
+        switch streak {
+        case 0: return "gray"
+        case 1...6: return "orange"
+        case 7...29: return "red"
+        case 30...99: return "purple"
+        default: return "yellow"
+        }
     }
 }
 
 // MARK: - Widget Entry
 struct MemoFlowEntry: TimelineEntry {
     let date: Date
+    let streakData: StreakWidgetData
+}
+
+// MARK: - Streak Widget Data
+struct StreakWidgetData {
+    let currentStreak: Int
+    let longestStreak: Int
+    let hasSentToday: Bool
+    let totalMemos: Int
+    let icon: String
+    let colorName: String
+    
+    static let placeholder = StreakWidgetData(
+        currentStreak: 7,
+        longestStreak: 14,
+        hasSentToday: true,
+        totalMemos: 42,
+        icon: "flame.fill",
+        colorName: "orange"
+    )
+    
+    var color: Color {
+        switch colorName {
+        case "orange": return .orange
+        case "red": return .red
+        case "purple": return .purple
+        case "yellow": return .yellow
+        default: return .gray
+        }
+    }
 }
 
 // MARK: - Widget Views
@@ -41,35 +120,54 @@ struct MemoFlowWidgetEntryView: View {
     var body: some View {
         switch family {
         case .systemSmall:
-            SmallWidgetView()
+            SmallWidgetView(streakData: entry.streakData)
         case .systemMedium:
-            MediumWidgetView()
+            MediumWidgetView(streakData: entry.streakData)
         case .systemLarge:
-            LargeWidgetView()
+            LargeWidgetView(streakData: entry.streakData)
         default:
-            SmallWidgetView()
+            SmallWidgetView(streakData: entry.streakData)
         }
     }
 }
 
 // MARK: - Small Widget
 struct SmallWidgetView: View {
+    let streakData: StreakWidgetData
+    
     var body: some View {
         ZStack {
             // 背景グラデーション
             ContainerRelativeShape()
                 .fill(Color(.systemBackground))
             
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
+                // ストリークバッジ
+                HStack(spacing: 4) {
+                    Image(systemName: streakData.icon)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(streakData.color)
+                    
+                    Text(streakData.currentStreak > 0 ? "\(streakData.currentStreak)日" : "")
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(streakData.color)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(
+                    Capsule()
+                        .fill(streakData.color.opacity(0.15))
+                )
+                
                 // アイコン
                 Image(systemName: "note.text.badge.plus")
-                    .font(.system(size: 36, weight: .medium))
+                    .font(.system(size: 32, weight: .medium))
                     .foregroundStyle(.primary)
                 
                 // テキスト
-                Text("メモを追加")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.secondary)
+                Text(streakData.hasSentToday ? "今日完了 ✓" : "メモを追加")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(streakData.hasSentToday ? .green : .secondary)
             }
         }
         .widgetURL(URL(string: "memoflow://capture"))
@@ -78,21 +176,36 @@ struct SmallWidgetView: View {
 
 // MARK: - Medium Widget
 struct MediumWidgetView: View {
+    let streakData: StreakWidgetData
+    
     var body: some View {
         ZStack {
             ContainerRelativeShape()
                 .fill(Color(.systemBackground))
             
-            HStack(spacing: 20) {
-                // 左側: アイコン
-                VStack(spacing: 8) {
-                    Image(systemName: "note.text.badge.plus")
-                        .font(.system(size: 44, weight: .medium))
-                        .foregroundStyle(.primary)
+            HStack(spacing: 16) {
+                // 左側: ストリーク情報
+                VStack(spacing: 12) {
+                    // ストリークバッジ（大）
+                    ZStack {
+                        Circle()
+                            .fill(streakData.color.opacity(0.15))
+                            .frame(width: 60, height: 60)
+                        
+                        VStack(spacing: 2) {
+                            Image(systemName: streakData.icon)
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundStyle(streakData.color)
+                            
+                            Text("\(streakData.currentStreak)")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundStyle(streakData.color)
+                        }
+                    }
                     
-                    Text("MemoFlow")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(.secondary)
+                    Text(streakData.hasSentToday ? "今日完了!" : "継続中")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(streakData.hasSentToday ? .green : .secondary)
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -100,13 +213,25 @@ struct MediumWidgetView: View {
                 Rectangle()
                     .fill(Color(.separator))
                     .frame(width: 1)
-                    .padding(.vertical, 16)
+                    .padding(.vertical, 12)
                 
-                // 右側: クイックアクション
-                VStack(alignment: .leading, spacing: 12) {
-                    QuickActionRow(icon: "tray.and.arrow.down", label: "Inbox")
-                    QuickActionRow(icon: "checkmark.circle", label: "タスク")
-                    QuickActionRow(icon: "note.text", label: "ノート")
+                // 右側: 統計とアクション
+                VStack(alignment: .leading, spacing: 10) {
+                    // 統計
+                    HStack(spacing: 16) {
+                        StatMini(label: "最長", value: "\(streakData.longestStreak)日", icon: "trophy.fill", color: .yellow)
+                        StatMini(label: "総数", value: "\(streakData.totalMemos)", icon: "note.text", color: .blue)
+                    }
+                    
+                    // キャプチャボタン
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundStyle(.primary)
+                        Text("メモを追加")
+                            .font(.system(size: 13, weight: .medium))
+                    }
+                    .padding(.top, 4)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -116,60 +241,105 @@ struct MediumWidgetView: View {
     }
 }
 
-struct QuickActionRow: View {
-    let icon: String
+// MARK: - Stat Mini (for Medium Widget)
+struct StatMini: View {
     let label: String
+    let value: String
+    let icon: String
+    let color: Color
     
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.secondary)
-                .frame(width: 20)
-            
+        VStack(spacing: 2) {
+            HStack(spacing: 3) {
+                Image(systemName: icon)
+                    .font(.system(size: 10))
+                    .foregroundStyle(color)
+                Text(value)
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+            }
             Text(label)
-                .font(.system(size: 13, weight: .regular))
-                .foregroundStyle(.primary)
+                .font(.system(size: 9))
+                .foregroundStyle(.secondary)
         }
     }
 }
 
+
 // MARK: - Large Widget
 struct LargeWidgetView: View {
+    let streakData: StreakWidgetData
+    
     var body: some View {
         ZStack {
             ContainerRelativeShape()
                 .fill(Color(.systemBackground))
             
-            VStack(spacing: 24) {
-                // ヘッダー
+            VStack(spacing: 20) {
+                // ヘッダー（ストリーク付き）
                 HStack {
                     Image(systemName: "note.text.badge.plus")
-                        .font(.system(size: 28, weight: .medium))
+                        .font(.system(size: 24, weight: .medium))
                     
                     Text("MemoFlow")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 18, weight: .semibold))
                     
                     Spacer()
-                }
-                
-                // メイン入力エリア（視覚的表現）
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("何でも書いて、すぐ送る")
-                        .font(.system(size: 16, weight: .light))
-                        .foregroundStyle(.tertiary)
                     
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color(.separator), lineWidth: 1)
-                        .frame(height: 100)
+                    // ストリークバッジ
+                    HStack(spacing: 4) {
+                        Image(systemName: streakData.icon)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(streakData.color)
+                        
+                        Text("\(streakData.currentStreak)日")
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundStyle(streakData.color)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(streakData.color.opacity(0.15))
+                    )
                 }
                 
-                // 送信先オプション
-                HStack(spacing: 16) {
-                    DestinationButton(icon: "tray.and.arrow.down", label: "Notion")
-                    DestinationButton(icon: "checkmark.circle", label: "Todoist")
-                    DestinationButton(icon: "note.text", label: "ノート")
+                // ストリーク統計
+                HStack(spacing: 12) {
+                    StreakStatCard(
+                        icon: streakData.icon,
+                        value: "\(streakData.currentStreak)",
+                        label: "現在",
+                        color: streakData.color
+                    )
+                    StreakStatCard(
+                        icon: "trophy.fill",
+                        value: "\(streakData.longestStreak)",
+                        label: "最長",
+                        color: .yellow
+                    )
+                    StreakStatCard(
+                        icon: "note.text",
+                        value: "\(streakData.totalMemos)",
+                        label: "総数",
+                        color: .blue
+                    )
                 }
+                
+                // 今日の状態
+                HStack {
+                    Image(systemName: streakData.hasSentToday ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(streakData.hasSentToday ? .green : .secondary)
+                    Text(streakData.hasSentToday ? "今日のメモ完了！" : "今日はまだ送信していません")
+                        .font(.system(size: 13))
+                        .foregroundStyle(streakData.hasSentToday ? .primary : .secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(.secondarySystemBackground))
+                )
                 
                 Spacer()
                 
@@ -177,15 +347,21 @@ struct LargeWidgetView: View {
                 HStack {
                     Spacer()
                     
-                    ZStack {
-                        Circle()
-                            .fill(Color.primary)
-                            .frame(width: 56, height: 56)
+                    VStack(spacing: 6) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.primary)
+                                .frame(width: 56, height: 56)
+                            
+                            Image(systemName: "paperplane.fill")
+                                .font(.system(size: 22, weight: .semibold))
+                                .foregroundStyle(Color(.systemBackground))
+                                .rotationEffect(.degrees(-45))
+                        }
                         
-                        Image(systemName: "paperplane.fill")
-                            .font(.system(size: 22, weight: .semibold))
-                            .foregroundStyle(Color(.systemBackground))
-                            .rotationEffect(.degrees(-45))
+                        Text("タップしてキャプチャ")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
                     }
                     
                     Spacer()
@@ -194,6 +370,35 @@ struct LargeWidgetView: View {
             .padding()
         }
         .widgetURL(URL(string: "memoflow://capture"))
+    }
+}
+
+// MARK: - Streak Stat Card (for Large Widget)
+struct StreakStatCard: View {
+    let icon: String
+    let value: String
+    let label: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundStyle(color)
+            
+            Text(value)
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+            
+            Text(label)
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
 }
 

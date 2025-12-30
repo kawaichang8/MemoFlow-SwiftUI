@@ -6,43 +6,40 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MemoFlowApp: App {
     @State private var settings = AppSettings.shared
+    @State private var themeManager = ThemeManager.shared
     
     init() {
         // アプリ起動時の初期設定
-        configureAppearance()
+        Self.configureAppearance()
+    }
+    
+    /// ナビゲーションバーの外観設定（static）
+    private static func configureAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(settings)
-                .preferredColorScheme(colorSchemeFromSettings)
+                .environment(themeManager)
+                .preferredColorScheme(colorSchemeFromTheme)
         }
+        .modelContainer(for: MemoHistoryItem.self)
     }
     
-    /// 設定から ColorScheme を取得
-    private var colorSchemeFromSettings: ColorScheme? {
-        switch settings.appearanceMode {
-        case 1:
-            return .light
-        case 2:
-            return .dark
-        default:
-            return nil // システムに従う
-        }
-    }
-    
-    private func configureAppearance() {
-        // ナビゲーションバーの外観設定
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithDefaultBackground()
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    /// テーマから ColorScheme を取得
+    private var colorSchemeFromTheme: ColorScheme? {
+        themeManager.currentTheme.colorScheme
     }
 }
 

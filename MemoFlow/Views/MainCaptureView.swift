@@ -2,7 +2,7 @@
 //  MainCaptureView.swift
 //  MemoFlow
 //
-//  メインキャプチャ画面 - 究極ミニマルGTDキャプチャ
+//  メインキャプチャ画面 - 究極ミニマル「流してスッキリ」GTDキャプチャ
 //
 
 import SwiftUI
@@ -11,11 +11,16 @@ struct MainCaptureView: View {
     // MARK: - Properties
     @State private var viewModel = MemoViewModel()
     @State private var showSettings = false
+    @State private var showHistory = false
     @State private var showSuccessOverlay = false
     @State private var showFailureOverlay = false
+    @State private var textFadeOut = false
+    @State private var showOnboarding = !AppSettings.shared.hasCompletedOnboarding
     @FocusState private var isTextFieldFocused: Bool
     
     private let urlHandler = URLSchemeHandler.shared
+    private let historyService = HistoryService.shared
+    private var themeManager: ThemeManager { ThemeManager.shared }
     
     // MARK: - Computed Properties
     private var isShowingFeedback: Bool {
@@ -23,8 +28,11 @@ struct MainCaptureView: View {
     }
     
     private var contentOpacity: Double {
+        if textFadeOut {
+            return 0.0
+        }
         if case .sending = viewModel.sendingState {
-            return 0.2
+            return 0.15
         }
         return isShowingFeedback ? 0.0 : 1.0
     }
@@ -35,23 +43,42 @@ struct MainCaptureView: View {
             let keyboardSafeHeight = geometry.size.height
             
             ZStack {
-                // 背景（純白 / 純黒）
-                Color.appBackground
+                // 背景（テーマ対応）
+                themeManager.backgroundColor
                     .ignoresSafeArea()
                     .onTapGesture {
-                        // 背景タップでキーボード表示
                         isTextFieldFocused = true
                     }
                 
                 // メインコンテンツ
                 VStack(spacing: 0) {
-                    // 上部バー: マイク + 送信先 + 設定
+                    // 上部バー: マイク + 送信先
                     topBar
                         .padding(.horizontal, 16)
                         .padding(.top, 4)
-                        .opacity(contentOpacity)
+                        .opacity(viewModel.isListening ? 0.3 : contentOpacity)
                     
-                    // メインテキストエディタ（90%占有）
+                    // テンプレート提案バナー
+                    if viewModel.hasTemplateSuggestion && !viewModel.isTemplateSuggestionDismissed && !viewModel.isListening {
+                        TemplateSuggestionBanner(
+                            suggestion: viewModel.templateSuggestion,
+                            onAccept: {
+                                viewModel.acceptTemplateSuggestion()
+                            },
+                            onDismiss: {
+                                viewModel.dismissTemplateSuggestion()
+                            }
+                        )
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .top).combined(with: .opacity),
+                            removal: .opacity
+                        ))
+                        .opacity(contentOpacity)
+                    }
+                    
+                    // メインテキストエディタ
                     MemoEditorView(
                         text: Binding(
                             get: { viewModel.memo.content },
@@ -63,51 +90,65 @@ struct MainCaptureView: View {
                     .frame(minHeight: keyboardSafeHeight * 0.65)
                     .padding(.horizontal, 8)
                     .opacity(contentOpacity)
+                    .blur(radius: viewModel.isListening ? 3 : 0)
                     
-                    // 波形アニメーション（音声入力中 - フル表示）
-                    if viewModel.isListening {
-                        WaveformView(audioLevel: viewModel.audioLevel)
-                            .frame(height: 60)
-                            .padding(.horizontal, 16)
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.9).combined(with: .opacity),
-                                removal: .opacity
-                            ))
+                    // タグチップエリア
+                    if !viewModel.isListening {
+                        TagChipsView(
+                            adoptedTags: viewModel.adoptedTags,
+                            suggestedTags: viewModel.suggestedTags,
+                            onToggle: { tag in
+                                viewModel.toggleTag(tag)
+                            },
+                            onRemove: { viewModel.removeTag($0) },
+                            showPrivacyNote: viewModel.isLocalAIEnabled && viewModel.wasProcessedByLocalAI
+                        )
+                        .padding(.horizontal, 8)
+                        .opacity(contentOpacity)
                     }
-                    
-                    // タグチップエリア（横スクロール + フェードイン）
-                    TagChipsView(
-                        adoptedTags: viewModel.adoptedTags,
-                        suggestedTags: viewModel.suggestedTags,
-                        onToggle: { viewModel.toggleTag($0) },
-                        onRemove: { viewModel.removeTag($0) }
-                    )
-                    .padding(.horizontal, 8)
-                    .opacity(contentOpacity)
                     
                     Spacer(minLength: 4)
                     
-                    // 送信ボタン（大きな紙飛行機）
-                    if !isShowingFeedback {
+                    // 送信ボタン
+                    if !isShowingFeedback && !viewModel.isListening {
                         SendButtonView(
                             state: viewModel.sendingState,
                             isEnabled: viewModel.canSend,
                             onSend: {
                                 Task {
+                                    // テキストフェードアウト開始
+                                    withAnimation(.easeOut(duration: 0.25)) {
+                                        textFadeOut = true
+                                    }
                                     await viewModel.send()
                                 }
                             }
                         )
                         .padding(.bottom, geometry.safeAreaInsets.bottom > 0 ? 20 : 28)
-                        .transition(.scale.combined(with: .opacity))
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.9).combined(with: .opacity),
+                            removal: .scale(scale: 1.1).combined(with: .opacity)
+                        ))
                     }
+                }
+                
+                // フルスクリーン波形オーバーレイ（音声入力中）
+                if viewModel.isListening {
+                    FullscreenWaveformOverlay(
+                        audioLevel: viewModel.audioLevel,
+                        transcribedText: viewModel.memo.content,
+                        onStop: {
+                            viewModel.stopVoiceInput()
+                        }
+                    )
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
                 }
                 
                 // 成功オーバーレイ
                 if showSuccessOverlay {
                     SuccessFeedbackView()
                         .transition(.asymmetric(
-                            insertion: .scale(scale: 0.7).combined(with: .opacity),
+                            insertion: .scale(scale: 0.6).combined(with: .opacity),
                             removal: .opacity
                         ))
                 }
@@ -116,27 +157,25 @@ struct MainCaptureView: View {
                 if showFailureOverlay {
                     FailureFeedbackView()
                         .transition(.asymmetric(
-                            insertion: .scale(scale: 0.7).combined(with: .opacity),
+                            insertion: .scale(scale: 0.6).combined(with: .opacity),
                             removal: .opacity
                         ))
                 }
             }
-            .animation(.spring(response: 0.3, dampingFraction: 0.85), value: contentOpacity)
-            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: viewModel.isListening)
+            .animation(.spring(response: 0.35, dampingFraction: 0.85), value: contentOpacity)
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.isListening)
             .animation(.spring(response: 0.35, dampingFraction: 0.7), value: showSuccessOverlay)
             .animation(.spring(response: 0.35, dampingFraction: 0.7), value: showFailureOverlay)
+            .animation(.easeOut(duration: 0.3), value: textFadeOut)
+            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.hasTemplateSuggestion)
+            .animation(.spring(response: 0.3, dampingFraction: 0.75), value: viewModel.isTemplateSuggestionDismissed)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onAppear {
-            // 起動時に即キーボード表示（強化）
             forceShowKeyboard()
-            
-            // 音声認識権限を事前リクエスト
             Task {
                 _ = await viewModel.requestSpeechAuthorization()
             }
-            
-            // Share Extensionからの共有コンテンツをチェック
             urlHandler.checkSharedContent()
             applyPendingContent()
         }
@@ -147,16 +186,41 @@ struct MainCaptureView: View {
             applyPendingContent()
         }
         .handleURLScheme()
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView {
+                showOnboarding = false
+                // オンボーディング後にキーボードを表示
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isTextFieldFocused = true
+                }
+            }
+        }
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showHistory) {
+            HistoryView { memo in
+                // 履歴から再利用
+                viewModel.onTextChange(memo.content)
+                viewModel.selectedDestination = memo.destination
+                for tag in memo.tags {
+                    viewModel.adoptTag(tag)
+                }
+                forceShowKeyboard()
+            }
+        }
         .gesture(
-            // 上スワイプで設定表示
             DragGesture(minimumDistance: 80)
                 .onEnded { value in
-                    if value.translation.height < -80 && !isShowingFeedback {
+                    // 上スワイプ → 設定
+                    if value.translation.height < -80 && !isShowingFeedback && !viewModel.isListening {
                         HapticManager.shared.lightTap()
                         showSettings = true
+                    }
+                    // 下スワイプ → 履歴
+                    if value.translation.height > 80 && !isShowingFeedback && !viewModel.isListening {
+                        HapticManager.shared.lightTap()
+                        showHistory = true
                     }
                 }
         )
@@ -165,7 +229,6 @@ struct MainCaptureView: View {
     // MARK: - Top Bar
     private var topBar: some View {
         HStack(spacing: 12) {
-            // マイクボタン（左）
             VoiceInputButton(
                 isListening: viewModel.isListening,
                 audioLevel: viewModel.audioLevel,
@@ -178,7 +241,11 @@ struct MainCaptureView: View {
             
             Spacer()
             
-            // 送信先ピッカー（右）
+            // ストリークバッジ
+            if AppSettings.shared.streakEnabled {
+                StreakBadgeView()
+            }
+            
             DestinationPickerView(
                 selectedDestination: Binding(
                     get: { viewModel.selectedDestination },
@@ -192,7 +259,6 @@ struct MainCaptureView: View {
     // MARK: - Private Methods
     
     private func forceShowKeyboard() {
-        // 複数回試行してキーボード表示を確実に
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             isTextFieldFocused = true
         }
@@ -206,37 +272,36 @@ struct MainCaptureView: View {
     private func handleSendingStateChange(_ state: SendingState) {
         switch state {
         case .success:
-            // キーボードを隠す
             isTextFieldFocused = false
             
-            // 成功フィードバック表示
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.65)) {
+            // 成功フィードバック
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                 showSuccessOverlay = true
             }
             HapticManager.shared.success()
             
-            // 0.9秒後にリセット
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-                withAnimation(.easeOut(duration: 0.25)) {
+            // リセット
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.85) {
+                withAnimation(.easeOut(duration: 0.2)) {
                     showSuccessOverlay = false
+                    textFadeOut = false
                 }
                 
-                // リセット後にキーボード再表示
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     forceShowKeyboard()
                 }
             }
             
         case .failure:
-            // 失敗フィードバック表示
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+            textFadeOut = false
+            
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.65)) {
                 showFailureOverlay = true
             }
             HapticManager.shared.error()
             
-            // 1.2秒後に非表示
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                withAnimation(.easeOut(duration: 0.25)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                withAnimation(.easeOut(duration: 0.2)) {
                     showFailureOverlay = false
                 }
                 viewModel.clearError()
@@ -259,6 +324,80 @@ struct MainCaptureView: View {
     }
 }
 
+// MARK: - Fullscreen Waveform Overlay
+struct FullscreenWaveformOverlay: View {
+    let audioLevel: Float
+    let transcribedText: String
+    let onStop: () -> Void
+    
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var pulseScale: CGFloat = 1.0
+    
+    var body: some View {
+        ZStack {
+            // 背景
+            Color.appBackground
+                .opacity(0.95)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 32) {
+                Spacer()
+                
+                // リアルタイムテキスト
+                if !transcribedText.isEmpty {
+                    Text(transcribedText)
+                        .font(.system(size: 22, weight: .medium, design: .rounded))
+                        .foregroundStyle(.primary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(5)
+                        .padding(.horizontal, 32)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                } else {
+                    Text("話してください...")
+                        .font(.system(size: 20, weight: .light, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
+                
+                Spacer()
+                
+                // フルスクリーン波形
+                WaveformView(audioLevel: audioLevel)
+                    .frame(height: 100)
+                    .padding(.horizontal, 24)
+                
+                Spacer()
+                
+                // 停止ボタン
+                Button(action: onStop) {
+                    ZStack {
+                        // パルスリング
+                        Circle()
+                            .stroke(Color.red.opacity(0.3), lineWidth: 3)
+                            .frame(width: 90, height: 90)
+                            .scaleEffect(pulseScale)
+                        
+                        Circle()
+                            .fill(Color.red)
+                            .frame(width: 72, height: 72)
+                            .shadow(color: .red.opacity(0.4), radius: 12, y: 6)
+                        
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(.white)
+                            .frame(width: 24, height: 24)
+                    }
+                }
+                .buttonStyle(SendButtonStyle())
+                .padding(.bottom, 60)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                pulseScale = 1.15
+            }
+        }
+    }
+}
+
 // MARK: - Voice Input Button
 struct VoiceInputButton: View {
     let isListening: Bool
@@ -273,29 +412,24 @@ struct VoiceInputButton: View {
     var body: some View {
         Button(action: onTap) {
             ZStack {
-                // 背景リング（音声入力中）
                 if isListening {
-                    // 音量レベルリング
                     Circle()
                         .stroke(Color.red.opacity(0.5), lineWidth: 2.5)
                         .frame(width: buttonSize + 10, height: buttonSize + 10)
                         .scaleEffect(1 + CGFloat(audioLevel) * 0.5)
                     
-                    // パルスリング
                     Circle()
                         .fill(Color.red.opacity(0.15))
                         .frame(width: buttonSize, height: buttonSize)
                         .scaleEffect(isPulsing ? 1.2 : 1.0)
                 }
                 
-                // 背景円（非録音時）
                 if !isListening {
                     Circle()
                         .fill(Color(.systemGray6))
                         .frame(width: buttonSize, height: buttonSize)
                 }
                 
-                // マイクアイコン
                 Image(systemName: isListening ? "waveform" : "mic.fill")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(isListening ? .red : .primary)
@@ -323,38 +457,40 @@ struct SuccessFeedbackView: View {
     @State private var iconScale: CGFloat = 0.0
     @State private var ringScale: CGFloat = 0.0
     @State private var ringOpacity: Double = 1.0
+    @State private var checkmarkTrim: CGFloat = 0.0
     
     private var successColor: Color { .success }
     
     var body: some View {
         ZStack {
-            // 外側のリング（拡大してフェード）
+            // 外側のリング
             Circle()
-                .stroke(successColor.opacity(0.5), lineWidth: 3)
-                .frame(width: 130, height: 130)
+                .stroke(successColor.opacity(0.5), lineWidth: 4)
+                .frame(width: 140, height: 140)
                 .scaleEffect(ringScale)
                 .opacity(ringOpacity)
             
             // 背景の円
             Circle()
-                .fill(successColor.opacity(colorScheme == .dark ? 0.2 : 0.12))
-                .frame(width: 100, height: 100)
+                .fill(successColor.opacity(colorScheme == .dark ? 0.25 : 0.15))
+                .frame(width: 110, height: 110)
                 .scaleEffect(iconScale)
             
-            // チェックマークアイコン
+            // アニメーションチェックマーク
             Image(systemName: "checkmark")
-                .font(.system(size: 50, weight: .bold))
+                .font(.system(size: 56, weight: .bold))
                 .foregroundStyle(successColor)
                 .scaleEffect(iconScale)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {
+            // バウンスアニメーション
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.5)) {
                 iconScale = 1.0
             }
-            withAnimation(.easeOut(duration: 0.6)) {
-                ringScale = 1.7
+            withAnimation(.easeOut(duration: 0.5)) {
+                ringScale = 1.8
             }
-            withAnimation(.easeOut(duration: 0.6).delay(0.1)) {
+            withAnimation(.easeOut(duration: 0.5).delay(0.08)) {
                 ringOpacity = 0.0
             }
         }
@@ -371,34 +507,108 @@ struct FailureFeedbackView: View {
     
     var body: some View {
         ZStack {
-            // 背景の円
             Circle()
-                .fill(errorColor.opacity(colorScheme == .dark ? 0.2 : 0.12))
-                .frame(width: 100, height: 100)
+                .fill(errorColor.opacity(colorScheme == .dark ? 0.25 : 0.15))
+                .frame(width: 110, height: 110)
                 .scaleEffect(iconScale)
             
-            // ×マークアイコン
             Image(systemName: "xmark")
-                .font(.system(size: 50, weight: .bold))
+                .font(.system(size: 56, weight: .bold))
                 .foregroundStyle(errorColor)
                 .scaleEffect(iconScale)
                 .offset(x: shakeOffset)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.5)) {
                 iconScale = 1.0
             }
             
-            // シェイクアニメーション
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation(.linear(duration: 0.05).repeatCount(6, autoreverses: true)) {
-                    shakeOffset = 12
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                withAnimation(.linear(duration: 0.04).repeatCount(7, autoreverses: true)) {
+                    shakeOffset = 14
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
                     shakeOffset = 0
                 }
             }
         }
+    }
+}
+
+// MARK: - Template Suggestion Banner
+struct TemplateSuggestionBanner: View {
+    let suggestion: TemplateSuggestion
+    let onAccept: () -> Void
+    let onDismiss: () -> Void
+    
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var isPressed = false
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // アイコン
+            Image(systemName: suggestion.type.iconName)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(suggestion.type.color)
+                .frame(width: 32, height: 32)
+                .background(
+                    Circle()
+                        .fill(suggestion.type.color.opacity(0.15))
+                )
+            
+            // メッセージ
+            VStack(alignment: .leading, spacing: 2) {
+                Text(suggestion.type.suggestionMessage)
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.primary)
+                
+                Text("\(suggestion.suggestedDestination.displayName) に送信")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
+            
+            // 採用ボタン
+            Button(action: onAccept) {
+                Text("採用")
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .background(
+                        Capsule()
+                            .fill(suggestion.type.color)
+                    )
+            }
+            .buttonStyle(.plain)
+            
+            // 閉じるボタン
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24, height: 24)
+                    .background(
+                        Circle()
+                            .fill(Color(.systemGray5))
+                    )
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(colorScheme == .dark ? Color(.systemGray6) : .white)
+                .shadow(color: .black.opacity(colorScheme == .dark ? 0.3 : 0.08), radius: 12, x: 0, y: 4)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(suggestion.type.color.opacity(0.3), lineWidth: 1)
+        )
+        .scaleEffect(isPressed ? 0.98 : 1.0)
+        .animation(.spring(response: 0.2, dampingFraction: 0.7), value: isPressed)
     }
 }
 
@@ -419,9 +629,215 @@ struct FailureFeedbackView: View {
     }
 }
 
-#Preview("Failure") {
+// MARK: - Streak Badge View
+struct StreakBadgeView: View {
+    @State private var streakManager = StreakManager.shared
+    @State private var showDetail = false
+    
+    var body: some View {
+        Button {
+            showDetail = true
+            HapticManager.shared.lightTap()
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: streakManager.streakIcon)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(streakColor)
+                
+                Text(streakManager.streakDisplayText)
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundStyle(streakColor)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(
+                Capsule()
+                    .fill(streakColor.opacity(0.15))
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(streakColor.opacity(0.3), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .scaleEffect(streakManager.hasSentMemoToday ? 1.0 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: streakManager.currentStreak)
+        .sheet(isPresented: $showDetail) {
+            StreakDetailSheet()
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+    }
+    
+    private var streakColor: Color {
+        switch streakManager.streakColorName {
+        case "orange": return .orange
+        case "red": return .red
+        case "purple": return .purple
+        case "yellow": return .yellow
+        default: return .gray
+        }
+    }
+}
+
+// MARK: - Streak Detail Sheet
+struct StreakDetailSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var streakManager = StreakManager.shared
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                // メインストリーク表示
+                VStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(streakColor.opacity(0.15))
+                            .frame(width: 120, height: 120)
+                        
+                        VStack(spacing: 4) {
+                            Image(systemName: streakManager.streakIcon)
+                                .font(.system(size: 36))
+                                .foregroundStyle(streakColor)
+                            
+                            Text("\(streakManager.currentStreak)")
+                                .font(.system(size: 40, weight: .bold, design: .rounded))
+                                .foregroundStyle(streakColor)
+                        }
+                    }
+                    
+                    Text("日連続")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                    
+                    Text(streakManager.motivationMessage)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                        .padding(.top, 4)
+                }
+                .padding(.top, 20)
+                
+                // 統計
+                HStack(spacing: 32) {
+                    StatItem(title: "最長記録", value: "\(streakManager.longestStreak)日", icon: "trophy.fill", color: .yellow)
+                    StatItem(title: "総メモ数", value: "\(streakManager.totalMemos)", icon: "note.text", color: .blue)
+                }
+                .padding(.horizontal)
+                
+                // 今日の状態
+                HStack {
+                    Image(systemName: streakManager.hasSentMemoToday ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(streakManager.hasSentMemoToday ? .green : .secondary)
+                    Text(streakManager.hasSentMemoToday ? "今日のメモ完了！" : "今日はまだ送信していません")
+                        .font(.subheadline)
+                        .foregroundStyle(streakManager.hasSentMemoToday ? .primary : .secondary)
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.systemGray6))
+                )
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .navigationTitle("ストリーク")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("閉じる") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private var streakColor: Color {
+        switch streakManager.streakColorName {
+        case "orange": return .orange
+        case "red": return .red
+        case "purple": return .purple
+        case "yellow": return .yellow
+        default: return .gray
+        }
+    }
+}
+
+// MARK: - Stat Item
+struct StatItem: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+            
+            Text(value)
+                .font(.title2.bold())
+            
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.systemGray6))
+        )
+    }
+}
+
+#Preview("Streak Badge") {
+    HStack {
+        StreakBadgeView()
+    }
+    .padding()
+}
+
+#Preview("Streak Detail") {
+    StreakDetailSheet()
+}
+
+#Preview("Waveform Overlay") {
+    FullscreenWaveformOverlay(
+        audioLevel: 0.6,
+        transcribedText: "こんにちは、これはテストです",
+        onStop: {}
+    )
+}
+
+#Preview("Template Banner - Task") {
     ZStack {
         Color.appBackground.ignoresSafeArea()
-        FailureFeedbackView()
+        VStack {
+            TemplateSuggestionBanner(
+                suggestion: TemplateSuggestion(
+                    type: .task,
+                    confidence: 0.85,
+                    suggestedDestination: .todoist
+                ),
+                onAccept: {},
+                onDismiss: {}
+            )
+            .padding()
+            
+            TemplateSuggestionBanner(
+                suggestion: TemplateSuggestion(
+                    type: .note,
+                    confidence: 0.75,
+                    suggestedDestination: .notionInbox
+                ),
+                onAccept: {},
+                onDismiss: {}
+            )
+            .padding()
+        }
     }
 }
