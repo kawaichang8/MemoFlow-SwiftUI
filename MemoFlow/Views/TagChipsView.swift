@@ -2,7 +2,7 @@
 //  TagChipsView.swift
 //  MemoFlow
 //
-//  AI提案タグチップ - 極限ミニマルの横スクロール
+//  AI提案タグチップ - 究極ミニマルの横スクロール
 //
 
 import SwiftUI
@@ -13,28 +13,37 @@ struct TagChipsView: View {
     let onToggle: (Tag) -> Void
     let onRemove: (Tag) -> Void
     
+    @State private var appeared = false
+    
     private var hasContent: Bool {
         !adoptedTags.isEmpty || !suggestedTags.isEmpty
     }
     
     var body: some View {
-        // タグチップ（ヘッダーなし、横スクロール）
+        // タグチップ（ヘッダーなし、横スクロール + フェードイン）
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 // 採用済みタグ
-                ForEach(adoptedTags) { tag in
+                ForEach(Array(adoptedTags.enumerated()), id: \.element.id) { index, tag in
                     AdoptedTagChip(
                         tag: tag,
                         onRemove: { onRemove(tag) }
                     )
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 8)
+                    .animation(
+                        .spring(response: 0.35, dampingFraction: 0.8)
+                        .delay(Double(index) * 0.05),
+                        value: appeared
+                    )
                     .transition(.asymmetric(
-                        insertion: .scale(scale: 0.85).combined(with: .opacity),
-                        removal: .scale(scale: 0.85).combined(with: .opacity)
+                        insertion: .scale(scale: 0.8).combined(with: .opacity),
+                        removal: .scale(scale: 0.8).combined(with: .opacity)
                     ))
                 }
                 
                 // 提案タグ
-                ForEach(suggestedTags) { tag in
+                ForEach(Array(suggestedTags.enumerated()), id: \.element.id) { index, tag in
                     SuggestedTagChip(
                         tag: tag,
                         onTap: {
@@ -42,19 +51,31 @@ struct TagChipsView: View {
                             onToggle(tag)
                         }
                     )
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 8)
+                    .animation(
+                        .spring(response: 0.35, dampingFraction: 0.8)
+                        .delay(Double(adoptedTags.count + index) * 0.05),
+                        value: appeared
+                    )
                     .transition(.asymmetric(
                         insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal: .scale(scale: 0.85).combined(with: .opacity)
+                        removal: .scale(scale: 0.8).combined(with: .opacity)
                     ))
                 }
             }
-            .padding(.horizontal, 4)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 8)
         }
-        .frame(height: hasContent ? 50 : 0)
+        .frame(height: hasContent ? 54 : 0)
         .clipped()
         .animation(.spring(response: 0.3, dampingFraction: 0.85), value: adoptedTags.count)
         .animation(.spring(response: 0.3, dampingFraction: 0.85), value: suggestedTags.count)
+        .onAppear {
+            withAnimation {
+                appeared = true
+            }
+        }
     }
 }
 
@@ -80,12 +101,12 @@ struct AdoptedTagChip: View {
             // 削除ボタン
             Button(action: onRemove) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.8))
-                    .frame(width: 18, height: 18)
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .frame(width: 16, height: 16)
                     .background(
                         Circle()
-                            .fill(.white.opacity(0.2))
+                            .fill(.white.opacity(0.25))
                     )
             }
             .buttonStyle(.plain)
@@ -97,8 +118,8 @@ struct AdoptedTagChip: View {
             Capsule()
                 .fill(accentColor)
         )
-        .shadow(color: accentColor.opacity(0.35), radius: 6, x: 0, y: 3)
-        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .shadow(color: accentColor.opacity(0.4), radius: 8, x: 0, y: 4)
+        .scaleEffect(isPressed ? 0.94 : 1.0)
         .animation(.spring(response: 0.2, dampingFraction: 0.7), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
@@ -126,7 +147,7 @@ struct SuggestedTagChip: View {
                 
                 // 追加アイコン
                 Image(systemName: "plus")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(Color.textTertiary)
             }
             .padding(.horizontal, 12)
@@ -137,11 +158,11 @@ struct SuggestedTagChip: View {
             )
             .background(
                 Capsule()
-                    .fill(Color(.systemGray6).opacity(colorScheme == .dark ? 0.5 : 0.8))
+                    .fill(Color(.systemGray6).opacity(colorScheme == .dark ? 0.4 : 0.7))
             )
         }
         .buttonStyle(.plain)
-        .scaleEffect(isPressed ? 0.93 : 1.0)
+        .scaleEffect(isPressed ? 0.92 : 1.0)
         .animation(.spring(response: 0.2, dampingFraction: 0.65), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
@@ -207,7 +228,7 @@ struct TagModeIndicator: View {
         
         Spacer()
     }
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
 }
 
 #Preview("Empty") {
@@ -225,7 +246,7 @@ struct TagModeIndicator: View {
         Spacer()
     }
     .padding()
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
 }
 
 #Preview("Only Suggested") {
@@ -246,7 +267,7 @@ struct TagModeIndicator: View {
         
         Spacer()
     }
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
 }
 
 #Preview("Dark Mode") {
@@ -270,6 +291,6 @@ struct TagModeIndicator: View {
         
         Spacer()
     }
-    .background(Color.appBackground)
+    .background(Color.appBackground.ignoresSafeArea())
     .preferredColorScheme(.dark)
 }

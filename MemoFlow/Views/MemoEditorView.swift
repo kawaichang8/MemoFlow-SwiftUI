@@ -2,7 +2,7 @@
 //  MemoEditorView.swift
 //  MemoFlow
 //
-//  巨大テキストエディタ - 極限ミニマルの入力エリア
+//  巨大テキストエディタ - 究極ミニマルの入力エリア
 //
 
 import SwiftUI
@@ -15,18 +15,18 @@ struct MemoEditorView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     // 巨大フォント設定
-    private let fontSize: CGFloat = 28
-    private let lineSpacing: CGFloat = 10
+    private let fontSize: CGFloat = 26
+    private let lineSpacing: CGFloat = 12
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            // プレースホルダー（中央揃えで大きく）
+            // プレースホルダー（優しく表示）
             if text.isEmpty {
                 Text(placeholder)
                     .font(.system(size: fontSize, weight: .light, design: .rounded))
-                    .foregroundStyle(Color.textTertiary.opacity(0.6))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 12)
+                    .foregroundStyle(Color.textTertiary.opacity(0.5))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 14)
                     .allowsHitTesting(false)
             }
             
@@ -40,8 +40,8 @@ struct MemoEditorView: View {
                 .autocorrectionDisabled(false)
                 .textInputAutocapitalization(.sentences)
                 .scrollIndicators(.hidden)
-                .padding(.horizontal, 4)
-                .padding(.vertical, 8)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 10)
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -56,7 +56,7 @@ struct MemoEditorView: View {
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground
+        Color.appBackground.ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
@@ -71,7 +71,7 @@ struct MemoEditorView: View {
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground
+        Color.appBackground.ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
@@ -86,7 +86,7 @@ struct MemoEditorView: View {
     @Previewable @FocusState var focused: Bool
     
     ZStack {
-        Color.appBackground
+        Color.appBackground.ignoresSafeArea()
         MemoEditorView(
             text: $text,
             isFocused: $focused,
