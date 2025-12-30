@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -60,3 +61,127 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+=======
+# =========================
+# MemoFlow .gitignore
+# =========================
+
+# ========== Xcode ==========
+# Build folders
+DerivedData/
+build/
+*.build/
+
+# User-specific project settings
+xcuserdata/
+*.xcuserstate
+
+# Workspace settings (keep shared schemes)
+*.xcworkspace/xcuserdata/
+
+# ==========  Secrets (最重要) ==========
+# API Keys and Tokens
+*.secret
+*.secrets
+*.key
+*.keys
+*.token
+*.tokens
+*.env
+.env.*
+!.env.example
+
+# Configuration files with sensitive data
+Secrets.swift
+Secrets/
+Config.swift
+LocalConfig.swift
+Keys.plist
+Secrets.plist
+APIKeys.plist
+Local/
+
+# ==========  Build Artifacts ==========
+# iOS App
+*.ipa
+*.app.dSYM.zip
+*.dSYM.zip
+*.dSYM/
+
+# Archives
+*.xcarchive
+
+# Crash logs
+*.crash
+
+# ==========  Swift Package Manager ==========
+.swiftpm/
+.build/
+Package.resolved
+
+# ==========  CocoaPods ==========
+Pods/
+*.xcworkspace
+!*.xcodeproj/project.xcworkspace/
+
+# ==========  Carthage ==========
+Carthage/Build/
+Carthage/Checkouts/
+
+# ==========  fastlane ==========
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# ==========  macOS ==========
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+ehthumbs.db
+
+# ==========  IDE & Editors ==========
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ==========  Backup Files ==========
+*.backup
+*.bak
+*.tmp
+*.temp
+*~
+
+# ==========  Personal/Local ==========
+*.local
+*.local.*
+personal/
+private/
+
+# ==========  Logs ==========
+*.log
+logs/
+
+# ==========  Testing ==========
+coverage/
+*.coverage
+*.gcov
+*.gcda
+*.gcno
+
+# ==========  Documentation (generated) ==========
+docs/generated/
+.jazzy/
+
+>>>>>>> 90daa32 (🔒 セキュリティ強化: .gitignore追加、xcuserdata除外)

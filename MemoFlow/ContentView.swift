@@ -2,23 +2,22 @@
 //  ContentView.swift
 //  MemoFlow
 //
-//  Created by Shunya Kawai on 2025/12/27.
+//  メインエントリポイント
 //
 
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        MainCaptureView()
     }
 }
 
 #Preview {
     ContentView()
+}
+
+#Preview("Dark Mode") {
+    ContentView()
+        .preferredColorScheme(.dark)
 }
