@@ -2,7 +2,7 @@
 //  MainCaptureView.swift
 //  MemoFlow
 //
-//  メインキャプチャ画面 - GTDの即時キャプチャハブ
+//  メインキャプチャ画面 - 極限ミニマルGTDキャプチャ
 //
 
 import SwiftUI
@@ -24,7 +24,7 @@ struct MainCaptureView: View {
     
     private var contentOpacity: Double {
         if case .sending = viewModel.sendingState {
-            return 0.5
+            return 0.3
         }
         return isShowingFeedback ? 0.0 : 1.0
     }
@@ -33,57 +33,57 @@ struct MainCaptureView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // 背景（ライト: 白、ダーク: 黒）
+                // 背景（純白 / 純黒）
                 Color.appBackground
                     .ignoresSafeArea()
                 
                 // メインコンテンツ
                 VStack(spacing: 0) {
-                    // 上部バー: マイクボタン + 送信先ピッカー
+                    // 上部バー: マイクボタン + 送信先ピッカー（コンパクト）
                     TopBarView(
                         viewModel: viewModel,
                         showSettings: $showSettings
                     )
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
                     .opacity(contentOpacity)
                     
-                    // メインテキストエディタ（画面80%占有）
+                    // メインテキストエディタ（90%占有、巨大フォント）
                     MemoEditorView(
                         text: Binding(
                             get: { viewModel.memo.content },
                             set: { viewModel.onTextChange($0) }
                         ),
                         isFocused: $isTextFieldFocused,
-                        placeholder: "何でも書いて、すぐ送る"
+                        placeholder: "なんでも"
                     )
-                    .frame(height: geometry.size.height * 0.6)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
+                    .frame(minHeight: geometry.size.height * 0.55)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 8)
                     .opacity(contentOpacity)
                     
                     // 波形アニメーション（音声入力中）
                     if viewModel.isListening {
                         WaveformView(audioLevel: viewModel.audioLevel)
-                            .frame(height: 60)
-                            .padding(.horizontal, 20)
-                            .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                            .frame(height: 50)
+                            .padding(.horizontal, 24)
+                            .transition(.opacity.combined(with: .scale(scale: 0.9)))
                     }
                     
-                    // タグチップエリア
+                    // タグチップエリア（横スクロール）
                     TagChipsView(
                         adoptedTags: viewModel.adoptedTags,
                         suggestedTags: viewModel.suggestedTags,
                         onToggle: { viewModel.toggleTag($0) },
                         onRemove: { viewModel.removeTag($0) }
                     )
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 4)
                     .opacity(contentOpacity)
                     
-                    Spacer()
+                    Spacer(minLength: 8)
                     
-                    // 送信ボタン
+                    // 送信ボタン（大きな紙飛行機）
                     if !isShowingFeedback {
                         SendButtonView(
                             state: viewModel.sendingState,
@@ -94,8 +94,7 @@ struct MainCaptureView: View {
                                 }
                             }
                         )
-                        .padding(.horizontal, 40)
-                        .padding(.bottom, 40)
+                        .padding(.bottom, geometry.safeAreaInsets.bottom > 0 ? 24 : 32)
                         .transition(.scale.combined(with: .opacity))
                     }
                 }
@@ -112,14 +111,15 @@ struct MainCaptureView: View {
                         .transition(.opacity.combined(with: .scale(scale: 0.8)))
                 }
             }
-            .animation(.spring(response: 0.4, dampingFraction: 0.75), value: contentOpacity)
-            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.isListening)
+            .animation(.spring(response: 0.35, dampingFraction: 0.8), value: contentOpacity)
+            .animation(.spring(response: 0.25, dampingFraction: 0.85), value: viewModel.isListening)
             .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showSuccessOverlay)
             .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showFailureOverlay)
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .onAppear {
             // 起動時に即キーボード表示
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 isTextFieldFocused = true
             }
             
@@ -144,9 +144,10 @@ struct MainCaptureView: View {
         }
         .gesture(
             // 上スワイプで設定表示
-            DragGesture(minimumDistance: 50)
+            DragGesture(minimumDistance: 80)
                 .onEnded { value in
-                    if value.translation.height < -50 && !isShowingFeedback {
+                    if value.translation.height < -80 && !isShowingFeedback {
+                        HapticManager.shared.lightTap()
                         showSettings = true
                     }
                 }
@@ -162,7 +163,7 @@ struct MainCaptureView: View {
             isTextFieldFocused = false
             
             // 成功フィードバック表示
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 showSuccessOverlay = true
             }
             HapticManager.shared.success()
@@ -174,7 +175,7 @@ struct MainCaptureView: View {
                 }
                 
                 // リセット後にキーボード再表示
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     isTextFieldFocused = true
                 }
             }
@@ -218,42 +219,37 @@ struct SuccessFeedbackView: View {
     @State private var ringScale: CGFloat = 0.0
     @State private var ringOpacity: Double = 1.0
     
-    private var successColor: Color {
-        Color.success
-    }
+    private var successColor: Color { .success }
     
     var body: some View {
         ZStack {
             // 外側のリング（拡大してフェード）
             Circle()
-                .stroke(successColor.opacity(colorScheme == .dark ? 0.4 : 0.3), lineWidth: 4)
-                .frame(width: 120, height: 120)
+                .stroke(successColor.opacity(0.4), lineWidth: 3)
+                .frame(width: 140, height: 140)
                 .scaleEffect(ringScale)
                 .opacity(ringOpacity)
             
             // 背景の円
             Circle()
-                .fill(successColor.opacity(colorScheme == .dark ? 0.2 : 0.15))
-                .frame(width: 100, height: 100)
+                .fill(successColor.opacity(colorScheme == .dark ? 0.15 : 0.1))
+                .frame(width: 110, height: 110)
                 .scaleEffect(iconScale)
             
             // チェックマークアイコン
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 72, weight: .medium))
+            Image(systemName: "checkmark")
+                .font(.system(size: 56, weight: .bold))
                 .foregroundStyle(successColor)
                 .scaleEffect(iconScale)
         }
         .onAppear {
-            // アイコンのスケールアニメーション
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
                 iconScale = 1.0
             }
-            
-            // リングの拡大アニメーション
-            withAnimation(.easeOut(duration: 0.6)) {
-                ringScale = 1.5
+            withAnimation(.easeOut(duration: 0.7)) {
+                ringScale = 1.6
             }
-            withAnimation(.easeOut(duration: 0.6).delay(0.2)) {
+            withAnimation(.easeOut(duration: 0.7).delay(0.15)) {
                 ringOpacity = 0.0
             }
         }
@@ -266,37 +262,34 @@ struct FailureFeedbackView: View {
     @State private var iconScale: CGFloat = 0.0
     @State private var shakeOffset: CGFloat = 0
     
-    private var errorColor: Color {
-        Color.error
-    }
+    private var errorColor: Color { .error }
     
     var body: some View {
         ZStack {
             // 背景の円
             Circle()
-                .fill(errorColor.opacity(colorScheme == .dark ? 0.2 : 0.15))
-                .frame(width: 100, height: 100)
+                .fill(errorColor.opacity(colorScheme == .dark ? 0.15 : 0.1))
+                .frame(width: 110, height: 110)
                 .scaleEffect(iconScale)
             
             // ×マークアイコン
-            Image(systemName: "xmark.circle.fill")
-                .font(.system(size: 72, weight: .medium))
+            Image(systemName: "xmark")
+                .font(.system(size: 56, weight: .bold))
                 .foregroundStyle(errorColor)
                 .scaleEffect(iconScale)
                 .offset(x: shakeOffset)
         }
         .onAppear {
-            // アイコンのスケールアニメーション
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
                 iconScale = 1.0
             }
             
             // シェイクアニメーション
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                withAnimation(.linear(duration: 0.08).repeatCount(4, autoreverses: true)) {
-                    shakeOffset = 8
+                withAnimation(.linear(duration: 0.06).repeatCount(5, autoreverses: true)) {
+                    shakeOffset = 10
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     shakeOffset = 0
                 }
             }
@@ -314,16 +307,16 @@ struct FailureFeedbackView: View {
         .preferredColorScheme(.dark)
 }
 
-#Preview("Success State") {
+#Preview("Success") {
     ZStack {
-        Color(.systemBackground)
+        Color.appBackground
         SuccessFeedbackView()
     }
 }
 
-#Preview("Failure State") {
+#Preview("Failure") {
     ZStack {
-        Color(.systemBackground)
+        Color.appBackground
         FailureFeedbackView()
     }
 }

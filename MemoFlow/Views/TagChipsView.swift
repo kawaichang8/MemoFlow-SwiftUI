@@ -2,7 +2,7 @@
 //  TagChipsView.swift
 //  MemoFlow
 //
-//  AI提案タグチップ - Apple Notes/Bear風のミニマルデザイン
+//  AI提案タグチップ - 極限ミニマルの横スクロール
 //
 
 import SwiftUI
@@ -18,61 +18,47 @@ struct TagChipsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // ヘッダー（タグがある場合のみ）
-            if hasContent {
-                HStack(spacing: 4) {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 10, weight: .medium))
-                    Text("タグ")
-                        .font(.system(size: 11, weight: .medium))
+        // タグチップ（ヘッダーなし、横スクロール）
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                // 採用済みタグ
+                ForEach(adoptedTags) { tag in
+                    AdoptedTagChip(
+                        tag: tag,
+                        onRemove: { onRemove(tag) }
+                    )
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.85).combined(with: .opacity),
+                        removal: .scale(scale: 0.85).combined(with: .opacity)
+                    ))
                 }
-                .foregroundStyle(.tertiary)
-                .padding(.leading, 4)
-            }
-            
-            // タグチップ
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    // 採用済みタグ
-                    ForEach(adoptedTags) { tag in
-                        AdoptedTagChip(
-                            tag: tag,
-                            onRemove: { onRemove(tag) }
-                        )
-                        .transition(.asymmetric(
-                            insertion: .scale(scale: 0.8).combined(with: .opacity),
-                            removal: .scale(scale: 0.8).combined(with: .opacity)
-                        ))
-                    }
-                    
-                    // 提案タグ
-                    ForEach(suggestedTags) { tag in
-                        SuggestedTagChip(
-                            tag: tag,
-                            onTap: {
-                                HapticManager.shared.lightTap()
-                                onToggle(tag)
-                            }
-                        )
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .scale(scale: 0.8).combined(with: .opacity)
-                        ))
-                    }
+                
+                // 提案タグ
+                ForEach(suggestedTags) { tag in
+                    SuggestedTagChip(
+                        tag: tag,
+                        onTap: {
+                            HapticManager.shared.lightTap()
+                            onToggle(tag)
+                        }
+                    )
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .scale(scale: 0.85).combined(with: .opacity)
+                    ))
                 }
-                .padding(.horizontal, 2)
-                .padding(.vertical, 4)
             }
+            .padding(.horizontal, 4)
+            .padding(.vertical, 6)
         }
-        .frame(height: hasContent ? 60 : 0)
+        .frame(height: hasContent ? 50 : 0)
         .clipped()
-        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: adoptedTags.count)
-        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: suggestedTags.count)
+        .animation(.spring(response: 0.3, dampingFraction: 0.85), value: adoptedTags.count)
+        .animation(.spring(response: 0.3, dampingFraction: 0.85), value: suggestedTags.count)
     }
 }
 
-// MARK: - Adopted Tag Chip (選択済み = 目立つオレンジ)
+// MARK: - Adopted Tag Chip (選択済み = 目立つアクセント)
 struct AdoptedTagChip: View {
     let tag: Tag
     let onRemove: () -> Void
@@ -80,40 +66,38 @@ struct AdoptedTagChip: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var isPressed = false
     
+    private var accentColor: Color {
+        Color.adoptedTagBackground
+    }
+    
     var body: some View {
-        HStack(spacing: 5) {
-            // チェックマーク
-            Image(systemName: "checkmark")
-                .font(.system(size: 10, weight: .bold))
-                .foregroundStyle(Color.adoptedTagText)
-            
+        HStack(spacing: 6) {
             // タグ名
             Text(tag.name)
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(Color.adoptedTagText)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white)
             
             // 削除ボタン
             Button(action: onRemove) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 14))
-                    .foregroundStyle(Color.adoptedTagText.opacity(0.7))
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.8))
+                    .frame(width: 18, height: 18)
+                    .background(
+                        Circle()
+                            .fill(.white.opacity(0.2))
+                    )
             }
             .buttonStyle(.plain)
         }
-        .padding(.leading, 10)
-        .padding(.trailing, 6)
-        .padding(.vertical, 6)
+        .padding(.leading, 12)
+        .padding(.trailing, 8)
+        .padding(.vertical, 8)
         .background(
             Capsule()
-                .fill(
-                    LinearGradient(
-                        colors: [Color.adoptedTagBackground, Color.adoptedTagBackground.opacity(0.85)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(accentColor)
         )
-        .shadow(color: Color.adoptedTagBackground.opacity(colorScheme == .dark ? 0.4 : 0.3), radius: 4, x: 0, y: 2)
+        .shadow(color: accentColor.opacity(0.35), radius: 6, x: 0, y: 3)
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(response: 0.2, dampingFraction: 0.7), value: isPressed)
         .simultaneousGesture(
@@ -124,7 +108,7 @@ struct AdoptedTagChip: View {
     }
 }
 
-// MARK: - Suggested Tag Chip (未選択 = 控えめグレー)
+// MARK: - Suggested Tag Chip (未選択 = 控えめ)
 struct SuggestedTagChip: View {
     let tag: Tag
     let onTap: () -> Void
@@ -137,28 +121,28 @@ struct SuggestedTagChip: View {
             HStack(spacing: 5) {
                 // タグ名
                 Text(tag.name)
-                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                    .foregroundStyle(Color.suggestedTagText)
+                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.textSecondary)
                 
                 // 追加アイコン
-                Image(systemName: "plus.circle")
-                    .font(.system(size: 12, weight: .medium))
+                Image(systemName: "plus")
+                    .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(Color.textTertiary)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .background(
                 Capsule()
-                    .strokeBorder(Color.suggestedTagBorder, lineWidth: 1)
+                    .strokeBorder(Color(.systemGray4), lineWidth: 1.5)
             )
             .background(
                 Capsule()
-                    .fill(Color.suggestedTagBackground.opacity(colorScheme == .dark ? 0.3 : 0.5))
+                    .fill(Color(.systemGray6).opacity(colorScheme == .dark ? 0.5 : 0.8))
             )
         }
         .buttonStyle(.plain)
-        .scaleEffect(isPressed ? 0.92 : 1.0)
-        .animation(.spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
+        .scaleEffect(isPressed ? 0.93 : 1.0)
+        .animation(.spring(response: 0.2, dampingFraction: 0.65), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in isPressed = true }
@@ -204,6 +188,8 @@ struct TagModeIndicator: View {
 // MARK: - Preview
 #Preview("With Tags") {
     VStack {
+        Spacer()
+        
         TagChipsView(
             adoptedTags: [
                 Tag(name: "アイデア", state: .adopted),
@@ -217,10 +203,11 @@ struct TagModeIndicator: View {
             onToggle: { _ in },
             onRemove: { _ in }
         )
+        .padding(.horizontal)
         
         Spacer()
     }
-    .padding()
+    .background(Color.appBackground)
 }
 
 #Preview("Empty") {
@@ -238,27 +225,34 @@ struct TagModeIndicator: View {
         Spacer()
     }
     .padding()
+    .background(Color.appBackground)
 }
 
 #Preview("Only Suggested") {
     VStack {
+        Spacer()
+        
         TagChipsView(
             adoptedTags: [],
             suggestedTags: [
                 Tag(name: "買い物", state: .suggested),
-                Tag(name: "学習", state: .suggested)
+                Tag(name: "学習", state: .suggested),
+                Tag(name: "メモ", state: .suggested)
             ],
             onToggle: { _ in },
             onRemove: { _ in }
         )
+        .padding(.horizontal)
         
         Spacer()
     }
-    .padding()
+    .background(Color.appBackground)
 }
 
 #Preview("Dark Mode") {
     VStack {
+        Spacer()
+        
         TagChipsView(
             adoptedTags: [
                 Tag(name: "アイデア", state: .adopted),
@@ -272,19 +266,10 @@ struct TagModeIndicator: View {
             onToggle: { _ in },
             onRemove: { _ in }
         )
+        .padding(.horizontal)
         
         Spacer()
     }
-    .padding()
     .background(Color.appBackground)
     .preferredColorScheme(.dark)
-}
-
-#Preview("Mode Indicators") {
-    HStack(spacing: 12) {
-        TagModeIndicator(mode: .autoAdopt)
-        TagModeIndicator(mode: .suggestOnly)
-        TagModeIndicator(mode: .off)
-    }
-    .padding()
 }
