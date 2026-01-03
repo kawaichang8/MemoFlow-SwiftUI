@@ -1,0 +1,360 @@
+/* 
+  Localizable.strings (Korean)
+  MemoFlow
+  
+  한국어 로컬라이제이션
+  
+  ⚠️ Xcode 수동 추가 필요:
+  1. Xcode에서 프로젝트를 연 후
+  2. MemoFlow 폴더에서 ko.lproj 폴더를 추가 (Add Files to "MemoFlow")
+  3. Target Membership에 MemoFlow 체크 확인
+*/
+
+// MARK: - Common
+"common.done" = "완료";
+"common.cancel" = "취소";
+"common.close" = "닫기";
+"common.ok" = "확인";
+"common.error" = "오류";
+"common.success" = "성공";
+"common.save" = "저장";
+"common.delete" = "삭제";
+"common.edit" = "편집";
+"common.send" = "보내기";
+"common.retry" = "다시 시도";
+"common.settings" = "설정";
+"common.version" = "버전";
+"common.premium" = "프리미엄";
+
+// MARK: - Language
+"language.system" = "시스템 설정";
+"language.title" = "언어";
+"language.description" = "앱의 표시 언어를 변경합니다. '시스템 설정'을 선택하면 기기 언어 설정을 자동으로 따릅니다.";
+"language.restartRequired" = "언어 변경은 다음 실행 시 완전히 적용됩니다.";
+
+// MARK: - App
+"app.name" = "MemoFlow";
+"app.tagline" = "GTD 캡처 허브";
+"app.description" = "MemoFlow - GTD 캡처 허브";
+
+// MARK: - Main Capture View
+"capture.placeholder" = "무엇이든";
+"capture.speakPrompt" = "말씀하세요...";
+"capture.sendTo" = "%@로 보내기";
+"capture.adopt" = "채택";
+
+// MARK: - Streak
+"streak.title" = "스트릭";
+"streak.current" = "현재 스트릭";
+"streak.longest" = "최장 기록";
+"streak.total" = "총 메모 수";
+"streak.todayComplete" = "오늘의 메모 완료!";
+"streak.todayNotSent" = "오늘 아직 보내지 않았습니다";
+"streak.daysConsecutive" = "일 연속";
+"streak.encouragement" = "매일 메모를 보내서 연속 기록을 늘려보세요! 알림을 켜면 오후 8시에 알려드립니다.";
+
+// MARK: - Destinations
+"destination.notionInbox" = "Notion 인박스";
+"destination.todoist" = "Todoist";
+"destination.slack" = "Slack";
+"destination.reflect" = "Reflect";
+"destination.emailToSelf" = "내게 이메일";
+"destination.task" = "작업";
+"destination.note" = "노트";
+
+// MARK: - Themes
+"theme.system" = "시스템";
+"theme.light" = "라이트";
+"theme.dark" = "다크";
+"theme.sepia" = "세피아";
+"theme.blueLightCut" = "블루라이트 차단";
+
+"theme.system.description" = "시스템 설정 따르기";
+"theme.light.description" = "순백의 밝은 화면";
+"theme.dark.description" = "순검정의 어두운 화면";
+"theme.sepia.description" = "따뜻한 베이지 배경";
+"theme.blueLightCut.description" = "눈에 편한 따뜻한 톤";
+
+// MARK: - Font Sizes
+"fontSize.standard" = "표준";
+"fontSize.large" = "크게";
+"fontSize.extraLarge" = "아주 크게";
+
+// MARK: - Settings
+"settings.title" = "설정";
+"settings.general" = "일반";
+"settings.defaultDestination" = "기본 보내기 대상";
+"settings.aiTagSuggestion" = "AI 태그 제안";
+"settings.aiTemplateDetection" = "AI 템플릿 감지";
+"settings.themeAndFont" = "테마 & 글꼴";
+"settings.themeLabel" = "🎨 테마: %@";
+"settings.fontSizeLabel" = "📝 글자 크기: %@";
+"settings.fontSize" = "글자 크기";
+"settings.theme" = "테마";
+"settings.preview" = "미리보기";
+"settings.previewText" = "가나다 ABC 123";
+
+// Tag suggestion modes
+"settings.tagMode.autoAdopt" = "자동 채택";
+"settings.tagMode.suggestOnly" = "제안만";
+"settings.tagMode.off" = "끄기";
+"settings.tagMode.autoAdopt.description" = "🏷️ AI가 인식한 태그를 자동으로 채택합니다. 불필요하면 ×로 삭제하세요.";
+"settings.tagMode.suggestOnly.description" = "🏷️ 태그를 제안 표시합니다. 탭하여 채택하세요.";
+"settings.tagMode.off.description" = "🏷️ 태그 제안을 표시하지 않습니다.";
+
+// Template detection modes
+"settings.templateMode.off" = "끄기";
+"settings.templateMode.suggestOnly" = "제안만";
+"settings.templateMode.autoSwitch" = "자동 전환";
+"settings.templateMode.off.description" = "📋 템플릿 감지를 사용하지 않습니다.";
+"settings.templateMode.suggestOnly.description" = "📋 입력 내용이 '작업'인지 '노트'인지 감지하여 배너로 보내기 대상을 제안합니다.";
+"settings.templateMode.autoSwitch.description" = "📋 AI가 자동으로 보내기 대상을 전환합니다.";
+
+// Feedback
+"settings.feedback" = "피드백";
+"settings.hapticFeedback" = "햅틱 피드백";
+"settings.sound" = "소리";
+
+// Streak settings
+"settings.streak" = "스트릭";
+"settings.streakDisplay" = "스트릭 표시";
+"settings.streakReminder" = "알림";
+"settings.todayComplete" = "오늘 완료";
+
+// AI settings
+"settings.aiSettings" = "AI 설정";
+"settings.appleIntelligence" = "Apple Intelligence";
+"settings.localAIPriority" = "로컬 AI 우선";
+"settings.onDevice" = "기기에서";
+"settings.localAIPrivacy" = "태그 제안은 이 기기에서 처리됩니다";
+"settings.localAIEnabled.description" = "🧠 고정밀 NLP(품사 분석, 감정 분석, 고유 명사 추출)로 태그를 제안합니다. 오프라인에서도 작동합니다.";
+"settings.localAIDisabled.description" = "💡 키워드 기반의 경량 처리만 사용합니다. 배터리 소모를 줄입니다.";
+
+// API Settings
+"settings.apiKey" = "API 키";
+"settings.apiToken" = "API 토큰";
+"settings.databaseId" = "데이터베이스 ID";
+"settings.projectId" = "프로젝트 ID (선택)";
+"settings.botToken" = "Bot 토큰";
+"settings.channelId" = "채널 ID";
+"settings.graphId" = "Graph ID";
+"settings.emailAddress" = "이메일 주소";
+"settings.connectionTest" = "연결 테스트";
+
+// Integration headers
+"settings.notion" = "Notion";
+"settings.todoist" = "Todoist";
+"settings.slack" = "Slack";
+"settings.reflect" = "Reflect";
+"settings.emailToSelf" = "내게 이메일";
+
+// Integration descriptions
+"settings.notion.description" = "Notion 인테그레이션을 생성하고 데이터베이스 접근 권한을 부여하세요.";
+"settings.todoist.description" = "Todoist 설정 > 연동 > 개발자에서 API 토큰을 가져오세요.";
+"settings.slack.description" = "chat:write와 channels:read 범위로 Slack 앱을 생성하세요. 채널 ID는 채널 우클릭 > 링크 복사로 가져올 수 있습니다.";
+"settings.reflect.description" = "Reflect 설정 > API에서 API 키를 가져오세요. Graph ID는 URL(reflect.app/g/xxxxx)의 xxxxx 부분입니다. Daily Note에 추가됩니다.";
+"settings.email.description" = "메모를 자신에게 이메일로 보냅니다. 기기의 메일 앱이 열립니다.";
+"settings.email.notAvailable" = "이메일 기능을 사용할 수 없습니다";
+
+// Placeholders
+"settings.placeholder.secret" = "secret_...";
+"settings.placeholder.apiToken" = "API 토큰 입력";
+"settings.placeholder.xoxb" = "xoxb-...";
+"settings.placeholder.apiKey" = "API 키 입력";
+
+// Support
+"settings.support" = "지원";
+"settings.helpAndGuide" = "연동 가이드 & 도움말";
+"settings.helpDescription" = "각 서비스의 연동 방법과 문제 해결을 확인할 수 있습니다.";
+
+// Reset
+"settings.resetAll" = "모든 설정 초기화";
+
+// MARK: - Premium / Subscription
+"premium.title" = "MemoFlow 프리미엄";
+"premium.tagline" = "생각의 캡처를 더 자유롭게";
+"premium.upgradeButton" = "프리미엄으로 업그레이드";
+"premium.restore" = "구매 복원";
+"premium.trial" = "7일 무료 체험";
+"premium.trialDays" = "%d일 무료 체험";
+"premium.autoRenew" = "체험 후 %@로 자동 갱신";
+"premium.cancelAnytime" = "언제든지 취소 가능";
+"premium.terms" = "이용약관";
+"premium.privacy" = "개인정보 처리방침";
+"premium.nextRenewal" = "다음 갱신: %@";
+"premium.manageSubscription" = "구독 관리";
+"premium.badge" = "프리미엄";
+"premium.features" = "프리미엄 기능";
+
+// Premium features
+"premium.feature.unlimited" = "무제한 연동";
+"premium.feature.unlimited.description" = "Notion, Todoist, Slack, Reflect, Email\n모두 동시에 사용 가능";
+"premium.feature.ai" = "고급 AI 태그 제안";
+"premium.feature.ai.description" = "더 정확한 태그 제안으로\n정리가 더욱 쉬워집니다";
+"premium.feature.themes" = "커스텀 테마";
+"premium.feature.themes.description" = "세피아, 블루라이트 차단 등\n눈에 편한 테마 사용";
+
+// Premium descriptions
+"premium.unlockDescription" = "무제한 연동, 고급 AI, 커스텀 테마를 잠금 해제";
+"premium.trialInfo" = "7일 무료 체험 • 언제든지 취소 가능";
+"premium.featureUpsell" = "%@은(는) 프리미엄 플랜에서 사용할 수 있습니다";
+
+// Errors
+"premium.error.purchase" = "구매 처리 중 오류가 발생했습니다";
+"premium.error.noRestore" = "복원할 수 있는 구매가 없습니다";
+"premium.error.restoreFailed" = "구매 복원에 실패했습니다";
+
+// MARK: - Help View
+"help.title" = "도움말";
+"help.integrationGuides" = "연동 가이드";
+"help.support" = "지원";
+"help.contactUs" = "문의하기";
+"help.contactDescription" = "궁금한 점이 있으시면 언제든지 문의해 주세요.";
+
+// Quick Start
+"help.quickStart.title" = "빠른 시작";
+"help.quickStart.subtitle" = "3분 만에 배우는 MemoFlow";
+"help.quickStart.intro" = "MemoFlow로 생각을 빠르게 캡처하는 방법을 배워보세요.";
+"help.quickStart.header" = "🚀 3분 빠른 시작";
+
+"help.quickStart.step1.title" = "앱 열기";
+"help.quickStart.step1.description" = "실행하면 바로 텍스트 입력 화면이 나타납니다. 키보드도 자동으로 표시되어 바로 작성을 시작할 수 있습니다.";
+"help.quickStart.step1.tip" = "홈 화면에 위젯을 추가하면 더 빠르게 캡처할 수 있어요!";
+
+"help.quickStart.step2.title" = "메모 작성";
+"help.quickStart.step2.description" = "떠오르는 것을 무엇이든 입력하세요. 작업, 아이디어, 메모 등 뭐든 괜찮습니다. AI가 자동으로 태그를 제안합니다.";
+"help.quickStart.step2.tip" = "마이크 버튼으로 음성 입력도 사용할 수 있어요.";
+
+"help.quickStart.step3.title" = "보내기 대상 선택";
+"help.quickStart.step3.description" = "오른쪽 상단의 드롭다운에서 보내기 대상을 선택하세요. Notion, Todoist, Slack, Reflect 등을 지원합니다.";
+"help.quickStart.step3.tip" = "먼저 설정에서 각 서비스의 API 키를 입력해 주세요.";
+
+"help.quickStart.step4.title" = "보내기!";
+"help.quickStart.step4.description" = "하단의 보내기 버튼을 탭하거나 위로 스와이프하세요. ✓가 표시되면 성공입니다!";
+"help.quickStart.step4.tip" = "매일 메모를 보내서 스트릭을 쌓아보세요!";
+
+"help.quickStart.proTips" = "💡 프로 팁";
+"help.quickStart.tip1" = "위로 스와이프하면 설정, 아래로 스와이프하면 기록을 표시";
+"help.quickStart.tip2" = "태그를 탭하여 채택/삭제 전환";
+"help.quickStart.tip3" = "AI가 메모 유형(작업/노트)을 자동 감지";
+
+// Notion Guide
+"help.notion.title" = "Notion 연동";
+"help.notion.subtitle" = "API 키 가져오기와 데이터베이스 설정";
+"help.notion.header" = "Notion 연동 가이드";
+"help.notion.intro" = "Notion과 MemoFlow를 연동하여 메모를 Notion 데이터베이스로 자동 전송하세요.";
+
+"help.notion.step1.title" = "Step 1: 인테그레이션 생성";
+"help.notion.step1.1" = "브라우저에서 notion.so/my-integrations에 접속";
+"help.notion.step1.2" = "'+ 새 인테그레이션' 클릭";
+"help.notion.step1.3" = "이름 입력 (예: MemoFlow)";
+"help.notion.step1.4" = "관련 워크스페이스 선택";
+"help.notion.step1.5" = "'제출'로 생성 완료";
+"help.notion.step1.tip" = "'Internal Integration Token'을 복사하여 MemoFlow 설정에 붙여넣으세요. (secret_로 시작하는 문자열)";
+"help.notion.step1.screenshot" = "인테그레이션 생성 화면";
+
+"help.notion.step2.title" = "Step 2: 데이터베이스 준비";
+"help.notion.step2.1" = "Notion에서 메모를 저장할 페이지 열기";
+"help.notion.step2.2" = "'/database' 입력 후 '데이터베이스 - 전체 페이지' 선택";
+"help.notion.step2.3" = "다음 속성 추가:";
+"help.notion.step2.screenshot" = "데이터베이스 속성 설정";
+"help.notion.property.title" = "제목";
+"help.notion.property.content" = "Content";
+"help.notion.property.tags" = "Tags";
+"help.notion.property.created" = "Created";
+"help.notion.propertyType.title" = "제목";
+"help.notion.propertyType.text" = "텍스트";
+"help.notion.propertyType.multiSelect" = "다중 선택";
+"help.notion.propertyType.date" = "날짜";
+
+"help.notion.step3.title" = "Step 3: 인테그레이션에 권한 부여";
+"help.notion.step3.1" = "생성한 데이터베이스 페이지 열기";
+"help.notion.step3.2" = "오른쪽 상단 '•••' 메뉴 클릭";
+"help.notion.step3.3" = "'+ 연결 추가' 선택";
+"help.notion.step3.4" = "Step 1에서 생성한 인테그레이션 선택";
+"help.notion.step3.warning" = "이 단계를 건너뛰면 '권한 없음' 오류가 발생합니다!";
+"help.notion.step3.screenshot" = "연결 추가 메뉴";
+
+"help.notion.step4.title" = "Step 4: 데이터베이스 ID 가져오기";
+"help.notion.step4.1" = "브라우저에서 데이터베이스 페이지 열기";
+"help.notion.step4.2" = "URL 복사";
+"help.notion.urlFormat" = "URL 형식:";
+"help.notion.urlExample" = "notion.so/workspace/**xxxxxxxx**?v=...";
+"help.notion.step4.tip" = "굵은 부분(32자 영숫자)이 데이터베이스 ID입니다. MemoFlow 설정에 붙여넣으세요.";
+
+"help.notion.complete" = "설정 완료!";
+"help.notion.completeDescription" = "MemoFlow 설정에서 '연결 테스트'를 실행하여 연동이 정상적으로 되었는지 확인하세요.";
+
+// Todoist Guide
+"help.todoist.title" = "Todoist 연동";
+"help.todoist.subtitle" = "API 토큰 가져오는 방법";
+"help.todoist.header" = "Todoist 연동 가이드";
+"help.todoist.intro" = "Todoist와 MemoFlow를 연동하여 작업을 빠르게 추가하세요.";
+
+"help.todoist.step1.title" = "Step 1: API 토큰 가져오기";
+"help.todoist.step1.1" = "Todoist에 로그인";
+"help.todoist.step1.2" = "오른쪽 상단 프로필 아이콘 → '설정'";
+"help.todoist.step1.3" = "'연동' 탭 선택";
+"help.todoist.step1.4" = "개발자 섹션에서 'API 토큰' 복사";
+"help.todoist.step1.screenshot" = "Todoist 설정 화면";
+
+// Slack Guide
+"help.slack.title" = "Slack 연동";
+"help.slack.subtitle" = "Bot 생성과 채널 설정";
+
+// Reflect Guide
+"help.reflect.title" = "Reflect 연동";
+"help.reflect.subtitle" = "API 키와 Graph ID 가져오기";
+
+// Troubleshooting
+"help.troubleshooting.title" = "문제 해결";
+"help.troubleshooting.subtitle" = "자주 발생하는 오류와 해결 방법";
+
+// FAQ
+"help.faq.title" = "자주 묻는 질문";
+"help.faq.subtitle" = "FAQ";
+
+// MARK: - History
+"history.title" = "기록";
+"history.empty" = "기록이 없습니다";
+"history.resend" = "다시 보내기";
+"history.deleteConfirm" = "이 메모를 삭제하시겠습니까?";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "MemoFlow에 오신 것을 환영합니다";
+"onboarding.getStarted" = "시작하기";
+"onboarding.next" = "다음";
+"onboarding.skip" = "건너뛰기";
+
+// MARK: - Errors
+"error.network" = "네트워크 오류";
+"error.sendFailed" = "보내기 실패";
+"error.apiKeyMissing" = "API 키가 설정되지 않았습니다";
+"error.unauthorized" = "인증 오류";
+"error.notConfigured" = "설정이 완료되지 않았습니다";
+"error.unknown" = "알 수 없는 오류가 발생했습니다";
+
+// MARK: - Tags (Presets)
+"tag.task" = "작업";
+"tag.idea" = "아이디어";
+"tag.memo" = "메모";
+"tag.work" = "업무";
+"tag.private" = "개인";
+"tag.shopping" = "쇼핑";
+"tag.meeting" = "회의";
+"tag.project" = "프로젝트";
+"tag.health" = "건강";
+"tag.study" = "공부";
+
+// MARK: - Notifications
+"notification.streakReminder.title" = "오늘 메모 아직 안 보내셨나요?";
+"notification.streakReminder.body" = "스트릭을 유지하려면 메모를 보내세요!";
+"notification.streakLost.title" = "스트릭이 초기화되었습니다";
+"notification.streakLost.body" = "내일부터 다시 시작해요!";
+
+// MARK: - Widget
+"widget.quickCapture" = "빠른 캡처";
+"widget.tapToCapture" = "탭하여 메모";
+"widget.streak" = "스트릭";
+
+

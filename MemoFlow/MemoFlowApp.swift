@@ -12,6 +12,7 @@ import SwiftData
 struct MemoFlowApp: App {
     @State private var settings = AppSettings.shared
     @State private var themeManager = ThemeManager.shared
+    @State private var languageRefreshId = UUID()
     
     init() {
         // アプリ起動時の初期設定
@@ -30,9 +31,17 @@ struct MemoFlowApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .id(languageRefreshId) // 言語変更時にビューを再生成
                 .environment(settings)
                 .environment(themeManager)
                 .preferredColorScheme(colorSchemeFromTheme)
+                .appLanguage(settings.appLanguage)
+                .onReceive(NotificationCenter.default.publisher(for: AppSettings.languageDidChangeNotification)) { _ in
+                    // 言語が変更されたらビューを再生成
+                    DispatchQueue.main.async {
+                        languageRefreshId = UUID()
+                    }
+                }
         }
         .modelContainer(for: MemoHistoryItem.self)
     }

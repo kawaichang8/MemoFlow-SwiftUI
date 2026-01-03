@@ -1,0 +1,354 @@
+/* 
+  Localizable.strings (Japanese)
+  MemoFlow
+  
+  日本語 - ベース言語
+*/
+
+// MARK: - Common
+"common.done" = "完了";
+"common.cancel" = "取消";
+"common.close" = "閉じる";
+"common.ok" = "OK";
+"common.error" = "エラー";
+"common.success" = "成功";
+"common.save" = "保存";
+"common.delete" = "削除";
+"common.edit" = "編集";
+"common.send" = "送信";
+"common.retry" = "再試行";
+"common.settings" = "設定";
+"common.version" = "バージョン";
+"common.premium" = "プレミアム";
+
+// MARK: - Language
+"language.system" = "システム設定に従う";
+"language.title" = "言語";
+"language.description" = "アプリの表示言語を変更します。「システム設定に従う」を選択すると、デバイスの言語設定に自動で追従します。";
+"language.restartRequired" = "言語変更は次回起動時に完全に反映されます。";
+
+// MARK: - App
+"app.name" = "MemoFlow";
+"app.tagline" = "GTD Capture Hub";
+"app.description" = "MemoFlow - GTD Capture Hub";
+
+// MARK: - Main Capture View
+"capture.placeholder" = "なんでも";
+"capture.speakPrompt" = "話してください...";
+"capture.sendTo" = "%@ に送信";
+"capture.adopt" = "採用";
+
+// MARK: - Streak
+"streak.title" = "ストリーク";
+"streak.current" = "現在のストリーク";
+"streak.longest" = "最長記録";
+"streak.total" = "総メモ数";
+"streak.todayComplete" = "今日のメモ完了！";
+"streak.todayNotSent" = "今日はまだ送信していません";
+"streak.daysConsecutive" = "日連続";
+"streak.encouragement" = "毎日メモを送信して連続記録を伸ばそう！リマインダーをオンにすると、夜8時に今日のメモを送るよう通知します。";
+
+// MARK: - Destinations
+"destination.notionInbox" = "Notion Inbox";
+"destination.todoist" = "Todoist";
+"destination.slack" = "Slack";
+"destination.reflect" = "Reflect";
+"destination.emailToSelf" = "Email to Self";
+"destination.task" = "タスク";
+"destination.note" = "ノート";
+
+// MARK: - Themes
+"theme.system" = "システム";
+"theme.light" = "ライト";
+"theme.dark" = "ダーク";
+"theme.sepia" = "セピア";
+"theme.blueLightCut" = "ブルーライトカット";
+
+"theme.system.description" = "システム設定に従う";
+"theme.light.description" = "純白の明るい画面";
+"theme.dark.description" = "純黒の暗い画面";
+"theme.sepia.description" = "暖かいベージュ背景";
+"theme.blueLightCut.description" = "目に優しい暖色系";
+
+// MARK: - Font Sizes
+"fontSize.standard" = "標準";
+"fontSize.large" = "大";
+"fontSize.extraLarge" = "特大";
+
+// MARK: - Settings
+"settings.title" = "設定";
+"settings.general" = "一般";
+"settings.defaultDestination" = "デフォルト送信先";
+"settings.aiTagSuggestion" = "AIタグ提案";
+"settings.aiTemplateDetection" = "AIテンプレート判別";
+"settings.themeAndFont" = "テーマ & フォント";
+"settings.themeLabel" = "🎨 テーマ: %@";
+"settings.fontSizeLabel" = "📝 文字サイズ: %@";
+"settings.fontSize" = "文字サイズ";
+"settings.theme" = "テーマ";
+"settings.preview" = "プレビュー";
+"settings.previewText" = "あいうえお ABC 123";
+
+// Tag suggestion modes
+"settings.tagMode.autoAdopt" = "自動採用";
+"settings.tagMode.suggestOnly" = "提案のみ";
+"settings.tagMode.off" = "オフ";
+"settings.tagMode.autoAdopt.description" = "🏷️ AIが認識したタグを自動で採用。不要なら×で削除。";
+"settings.tagMode.suggestOnly.description" = "🏷️ タグを提案表示。タップで採用。";
+"settings.tagMode.off.description" = "🏷️ タグ提案を表示しません。";
+
+// Template detection modes
+"settings.templateMode.off" = "オフ";
+"settings.templateMode.suggestOnly" = "提案のみ";
+"settings.templateMode.autoSwitch" = "自動切替";
+"settings.templateMode.off.description" = "📋 テンプレート判別を使用しません。";
+"settings.templateMode.suggestOnly.description" = "📋 入力内容から「タスク」か「ノート」かを判別し、バナーで送信先を提案。";
+"settings.templateMode.autoSwitch.description" = "📋 AIが自動で送信先を切り替えます。";
+
+// Feedback
+"settings.feedback" = "フィードバック";
+"settings.hapticFeedback" = "触覚フィードバック";
+"settings.sound" = "サウンド";
+
+// Streak settings
+"settings.streak" = "ストリーク";
+"settings.streakDisplay" = "ストリーク表示";
+"settings.streakReminder" = "リマインダー通知";
+"settings.todayComplete" = "今日完了";
+
+// AI settings
+"settings.aiSettings" = "AI設定";
+"settings.appleIntelligence" = "Apple Intelligence";
+"settings.localAIPriority" = "ローカルAI優先";
+"settings.onDevice" = "デバイス上";
+"settings.localAIPrivacy" = "タグ提案はデバイス上で処理されています";
+"settings.localAIEnabled.description" = "🧠 高精度NLP（品詞解析・感情分析・固有表現抽出）でタグを提案。オフラインでも動作します。";
+"settings.localAIDisabled.description" = "💡 キーワードベースの軽量処理のみ。バッテリー消費を抑えます。";
+
+// API Settings
+"settings.apiKey" = "API キー";
+"settings.apiToken" = "API トークン";
+"settings.databaseId" = "データベース ID";
+"settings.projectId" = "プロジェクト ID（オプション）";
+"settings.botToken" = "Bot Token";
+"settings.channelId" = "チャンネル ID";
+"settings.graphId" = "Graph ID";
+"settings.emailAddress" = "メールアドレス";
+"settings.connectionTest" = "接続テスト";
+
+// Integration headers
+"settings.notion" = "Notion";
+"settings.todoist" = "Todoist";
+"settings.slack" = "Slack";
+"settings.reflect" = "Reflect";
+"settings.emailToSelf" = "Email to Self";
+
+// Integration descriptions
+"settings.notion.description" = "Notion インテグレーションを作成し、データベースへのアクセスを許可してください。";
+"settings.todoist.description" = "Todoist の設定 > 連携 > 開発者 から API トークンを取得してください。";
+"settings.slack.description" = "Slack App を作成し、Bot Token Scopes に chat:write と channels:read を追加してください。チャンネルID は右クリック > リンクをコピー から取得できます。";
+"settings.reflect.description" = "Reflect の Settings > API から API キーを取得。Graph ID は URL (reflect.app/g/xxxxx) の xxxxx 部分です。Daily Note に追記されます。";
+"settings.email.description" = "メモを自分宛てにメール送信します。デバイスのメールアプリが起動します。";
+"settings.email.notAvailable" = "メール送信機能が利用できません";
+
+// Placeholders
+"settings.placeholder.secret" = "secret_...";
+"settings.placeholder.apiToken" = "APIトークンを入力";
+"settings.placeholder.xoxb" = "xoxb-...";
+"settings.placeholder.apiKey" = "APIキーを入力";
+
+// Support
+"settings.support" = "サポート";
+"settings.helpAndGuide" = "連携ガイド & ヘルプ";
+"settings.helpDescription" = "各サービスの連携方法やトラブルシューティングを確認できます。";
+
+// Reset
+"settings.resetAll" = "すべての設定をリセット";
+
+// MARK: - Premium / Subscription
+"premium.title" = "MemoFlow Premium";
+"premium.tagline" = "思考のキャプチャを、もっと自由に";
+"premium.upgradeButton" = "プレミアムにアップグレード";
+"premium.restore" = "購入を復元";
+"premium.trial" = "7日間無料で試す";
+"premium.trialDays" = "%d日間無料トライアル";
+"premium.autoRenew" = "無料トライアル後、%@で自動更新";
+"premium.cancelAnytime" = "いつでもキャンセル可能です";
+"premium.terms" = "利用規約";
+"premium.privacy" = "プライバシーポリシー";
+"premium.nextRenewal" = "次回更新: %@";
+"premium.manageSubscription" = "サブスクリプションを管理";
+"premium.badge" = "プレミアム";
+"premium.features" = "プレミアム機能";
+
+// Premium features
+"premium.feature.unlimited" = "無制限連携";
+"premium.feature.unlimited.description" = "Notion、Todoist、Slack、Reflect、Email\nすべて同時に使用可能";
+"premium.feature.ai" = "高度AIタグ提案";
+"premium.feature.ai.description" = "より精度の高いタグ提案で\n整理がさらに楽に";
+"premium.feature.themes" = "カスタムテーマ";
+"premium.feature.themes.description" = "セピア、ブルーライトカット等\n目に優しいテーマを使用";
+
+// Premium descriptions
+"premium.unlockDescription" = "無制限連携、高度AI、カスタムテーマを解放";
+"premium.trialInfo" = "7日間無料トライアル • いつでもキャンセル可能";
+"premium.featureUpsell" = "%@はプレミアムプランで利用できます";
+
+// Errors
+"premium.error.purchase" = "購入処理中にエラーが発生しました";
+"premium.error.noRestore" = "復元可能な購入が見つかりませんでした";
+"premium.error.restoreFailed" = "購入の復元に失敗しました";
+
+// MARK: - Help View
+"help.title" = "ヘルプ";
+"help.integrationGuides" = "連携ガイド";
+"help.support" = "サポート";
+"help.contactUs" = "お問い合わせ";
+"help.contactDescription" = "ご不明な点がございましたらお気軽にお問い合わせください。";
+
+// Quick Start
+"help.quickStart.title" = "クイックスタート";
+"help.quickStart.subtitle" = "3分でわかるMemoFlowの使い方";
+"help.quickStart.intro" = "MemoFlowで思考をすばやくキャプチャする方法を学びましょう。";
+"help.quickStart.header" = "🚀 3分クイックスタート";
+
+"help.quickStart.step1.title" = "アプリを開く";
+"help.quickStart.step1.description" = "起動すると、すぐにテキスト入力画面が表示されます。キーボードも自動で表示されるので、思いついたことをすぐに書き始められます。";
+"help.quickStart.step1.tip" = "ウィジェットをホーム画面に追加すると、さらに速くキャプチャできます！";
+
+"help.quickStart.step2.title" = "メモを書く";
+"help.quickStart.step2.description" = "思いついたことを何でも入力してください。タスク、アイデア、メモ、何でもOK。AIがタグを自動で提案してくれます。";
+"help.quickStart.step2.tip" = "マイクボタンで音声入力も使えます。";
+
+"help.quickStart.step3.title" = "送信先を選ぶ";
+"help.quickStart.step3.description" = "右上のドロップダウンから送信先を選択。Notion、Todoist、Slack、Reflectなど、お好みのサービスに送れます。";
+"help.quickStart.step3.tip" = "事前に設定画面で各サービスのAPIキーを入力してください。";
+
+"help.quickStart.step4.title" = "送信！";
+"help.quickStart.step4.description" = "下部の送信ボタンをタップ（または上にスワイプ）で送信完了。✓が表示されれば成功です！";
+"help.quickStart.step4.tip" = "毎日メモを送信してストリークを伸ばそう！";
+
+"help.quickStart.proTips" = "💡 Pro Tips";
+"help.quickStart.tip1" = "上にスワイプで設定画面、下にスワイプで履歴を表示";
+"help.quickStart.tip2" = "タグをタップして採用/削除を切り替え";
+"help.quickStart.tip3" = "AIがメモの種類（タスク/ノート）を自動判別";
+
+// Notion Guide
+"help.notion.title" = "Notion連携";
+"help.notion.subtitle" = "APIキーの取得とデータベース設定";
+"help.notion.header" = "Notion連携ガイド";
+"help.notion.intro" = "NotionとMemoFlowを連携して、メモを自動でNotionデータベースに送信しましょう。";
+
+"help.notion.step1.title" = "Step 1: インテグレーションを作成";
+"help.notion.step1.1" = "ブラウザで notion.so/my-integrations にアクセス";
+"help.notion.step1.2" = "「+ 新しいインテグレーション」をクリック";
+"help.notion.step1.3" = "名前を入力（例: MemoFlow）";
+"help.notion.step1.4" = "関連ワークスペースを選択";
+"help.notion.step1.5" = "「送信」で作成完了";
+"help.notion.step1.tip" = "「Internal Integration Token」をコピーして、MemoFlowの設定画面に貼り付けてください。（secret_で始まる文字列）";
+"help.notion.step1.screenshot" = "インテグレーション作成画面";
+
+"help.notion.step2.title" = "Step 2: データベースを準備";
+"help.notion.step2.1" = "Notionでメモを保存したいページを開く";
+"help.notion.step2.2" = "「/database」と入力して「データベース - フルページ」を選択";
+"help.notion.step2.3" = "以下のプロパティを追加:";
+"help.notion.step2.screenshot" = "データベースのプロパティ設定";
+"help.notion.property.title" = "タイトル";
+"help.notion.property.content" = "Content";
+"help.notion.property.tags" = "Tags";
+"help.notion.property.created" = "Created";
+"help.notion.propertyType.title" = "タイトル";
+"help.notion.propertyType.text" = "テキスト";
+"help.notion.propertyType.multiSelect" = "マルチセレクト";
+"help.notion.propertyType.date" = "日付";
+
+"help.notion.step3.title" = "Step 3: インテグレーションに許可を与える";
+"help.notion.step3.1" = "作成したデータベースページを開く";
+"help.notion.step3.2" = "右上の「•••」メニューをクリック";
+"help.notion.step3.3" = "「+ コネクトを追加」を選択";
+"help.notion.step3.4" = "Step 1で作成したインテグレーションを選択";
+"help.notion.step3.warning" = "この手順を忘れると「権限がありません」エラーが発生します！";
+"help.notion.step3.screenshot" = "コネクト追加メニュー";
+
+"help.notion.step4.title" = "Step 4: データベースIDを取得";
+"help.notion.step4.1" = "データベースページをブラウザで開く";
+"help.notion.step4.2" = "URLをコピー";
+"help.notion.urlFormat" = "URLの形式:";
+"help.notion.urlExample" = "notion.so/workspace/**xxxxxxxx**?v=...";
+"help.notion.step4.tip" = "太字部分（32文字の英数字）がデータベースIDです。MemoFlowの設定画面に貼り付けてください。";
+
+"help.notion.complete" = "設定完了！";
+"help.notion.completeDescription" = "MemoFlowの設定画面で「接続テスト」を実行して、正常に連携できているか確認してください。";
+
+// Todoist Guide
+"help.todoist.title" = "Todoist連携";
+"help.todoist.subtitle" = "APIトークンの取得方法";
+"help.todoist.header" = "Todoist連携ガイド";
+"help.todoist.intro" = "TodoistとMemoFlowを連携して、タスクをすばやく追加しましょう。";
+
+"help.todoist.step1.title" = "Step 1: APIトークンを取得";
+"help.todoist.step1.1" = "Todoistにログイン";
+"help.todoist.step1.2" = "右上のプロフィールアイコン → 「設定」";
+"help.todoist.step1.3" = "「連携機能」タブを選択";
+"help.todoist.step1.4" = "「開発者」セクションの「APIトークン」をコピー";
+"help.todoist.step1.screenshot" = "Todoist設定画面";
+
+// Slack Guide
+"help.slack.title" = "Slack連携";
+"help.slack.subtitle" = "Botの作成とチャンネル設定";
+
+// Reflect Guide
+"help.reflect.title" = "Reflect連携";
+"help.reflect.subtitle" = "APIキーとGraph IDの取得";
+
+// Troubleshooting
+"help.troubleshooting.title" = "トラブルシューティング";
+"help.troubleshooting.subtitle" = "よくあるエラーと解決法";
+
+// FAQ
+"help.faq.title" = "よくある質問";
+"help.faq.subtitle" = "FAQ";
+
+// MARK: - History
+"history.title" = "履歴";
+"history.empty" = "履歴がありません";
+"history.resend" = "再送信";
+"history.deleteConfirm" = "このメモを削除しますか？";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "MemoFlowへようこそ";
+"onboarding.getStarted" = "始める";
+"onboarding.next" = "次へ";
+"onboarding.skip" = "スキップ";
+
+// MARK: - Errors
+"error.network" = "ネットワークエラー";
+"error.sendFailed" = "送信に失敗しました";
+"error.apiKeyMissing" = "APIキーが設定されていません";
+"error.unauthorized" = "認証エラー";
+"error.notConfigured" = "設定が完了していません";
+"error.unknown" = "不明なエラーが発生しました";
+
+// MARK: - Tags (Presets)
+"tag.task" = "タスク";
+"tag.idea" = "アイデア";
+"tag.memo" = "メモ";
+"tag.work" = "仕事";
+"tag.private" = "プライベート";
+"tag.shopping" = "買い物";
+"tag.meeting" = "会議";
+"tag.project" = "プロジェクト";
+"tag.health" = "健康";
+"tag.study" = "勉強";
+
+// MARK: - Notifications
+"notification.streakReminder.title" = "今日のメモはまだ？";
+"notification.streakReminder.body" = "ストリークを守るために、メモを送信しましょう！";
+"notification.streakLost.title" = "ストリークがリセットされました";
+"notification.streakLost.body" = "明日からまた頑張りましょう！";
+
+// MARK: - Widget
+"widget.quickCapture" = "クイックキャプチャ";
+"widget.tapToCapture" = "タップでメモ";
+"widget.streak" = "ストリーク";
+

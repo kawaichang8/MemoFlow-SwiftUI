@@ -1,0 +1,15 @@
+/* 
+  InfoPlist.strings (Simplified Chinese)
+  MemoFlow
+  
+  Info.plist 本地化
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "MemoFlow 使用麦克风进行语音输入，快速捕捉备忘录。";
+"NSSpeechRecognitionUsageDescription" = "MemoFlow 使用语音识别将语音转换为文本。";
+

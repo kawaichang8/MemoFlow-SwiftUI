@@ -16,6 +16,8 @@ struct MainCaptureView: View {
     @State private var showFailureOverlay = false
     @State private var textFadeOut = false
     @State private var showOnboarding = !AppSettings.shared.hasCompletedOnboarding
+    @State private var showPaywall = false
+    @State private var purchaseManager = PurchaseManager.shared
     @FocusState private var isTextFieldFocused: Bool
     
     private let urlHandler = URLSchemeHandler.shared
@@ -85,7 +87,7 @@ struct MainCaptureView: View {
                             set: { viewModel.onTextChange($0) }
                         ),
                         isFocused: $isTextFieldFocused,
-                        placeholder: "なんでも"
+                        placeholder: L10n.Capture.placeholder
                     )
                     .frame(minHeight: keyboardSafeHeight * 0.65)
                     .padding(.horizontal, 8)
@@ -194,6 +196,9 @@ struct MainCaptureView: View {
                     isTextFieldFocused = true
                 }
             }
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
@@ -353,7 +358,7 @@ struct FullscreenWaveformOverlay: View {
                         .padding(.horizontal, 32)
                         .transition(.opacity.combined(with: .scale(scale: 0.95)))
                 } else {
-                    Text("話してください...")
+                    Text(L10n.Capture.speakPrompt)
                         .font(.system(size: 20, weight: .light, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
@@ -562,7 +567,7 @@ struct TemplateSuggestionBanner: View {
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundStyle(.primary)
                 
-                Text("\(suggestion.suggestedDestination.displayName) に送信")
+                Text(L10n.Capture.sendTo(suggestion.suggestedDestination.localizedDisplayName))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.secondary)
             }
@@ -571,7 +576,7 @@ struct TemplateSuggestionBanner: View {
             
             // 採用ボタン
             Button(action: onAccept) {
-                Text("採用")
+                Text(L10n.Capture.adopt)
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 14)
@@ -613,8 +618,14 @@ struct TemplateSuggestionBanner: View {
 }
 
 // MARK: - Preview
-#Preview {
+#Preview("Japanese") {
     MainCaptureView()
+        .previewJapanese()
+}
+
+#Preview("English") {
+    MainCaptureView()
+        .previewEnglish()
 }
 
 #Preview("Dark Mode") {
@@ -706,7 +717,7 @@ struct StreakDetailSheet: View {
                         }
                     }
                     
-                    Text("日連続")
+                    Text(L10n.Streak.daysConsecutive)
                         .font(.title3)
                         .foregroundStyle(.secondary)
                     
@@ -719,8 +730,8 @@ struct StreakDetailSheet: View {
                 
                 // 統計
                 HStack(spacing: 32) {
-                    StatItem(title: "最長記録", value: "\(streakManager.longestStreak)日", icon: "trophy.fill", color: .yellow)
-                    StatItem(title: "総メモ数", value: "\(streakManager.totalMemos)", icon: "note.text", color: .blue)
+                    StatItem(title: L10n.Streak.longest, value: L10n.Streak.days(streakManager.longestStreak), icon: "trophy.fill", color: .yellow)
+                    StatItem(title: L10n.Streak.total, value: "\(streakManager.totalMemos)", icon: "note.text", color: .blue)
                 }
                 .padding(.horizontal)
                 
@@ -728,7 +739,7 @@ struct StreakDetailSheet: View {
                 HStack {
                     Image(systemName: streakManager.hasSentMemoToday ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(streakManager.hasSentMemoToday ? .green : .secondary)
-                    Text(streakManager.hasSentMemoToday ? "今日のメモ完了！" : "今日はまだ送信していません")
+                    Text(streakManager.hasSentMemoToday ? L10n.Streak.todayComplete : L10n.Streak.todayNotSent)
                         .font(.subheadline)
                         .foregroundStyle(streakManager.hasSentMemoToday ? .primary : .secondary)
                 }
@@ -742,11 +753,11 @@ struct StreakDetailSheet: View {
                 
                 Spacer()
             }
-            .navigationTitle("ストリーク")
+            .navigationTitle(L10n.Streak.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("閉じる") {
+                    Button(L10n.Common.close) {
                         dismiss()
                     }
                 }

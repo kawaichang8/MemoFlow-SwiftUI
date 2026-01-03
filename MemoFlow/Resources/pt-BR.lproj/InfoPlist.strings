@@ -1,0 +1,21 @@
+/* 
+  InfoPlist.strings (Brazilian Portuguese)
+  MemoFlow
+  
+  Localização do Info.plist
+  
+  ⚠️ Adição manual no Xcode necessária:
+  1. Abrir o projeto no Xcode
+  2. Adicionar a pasta pt-BR.lproj (Add Files to "MemoFlow")
+  3. Verificar se Target Membership tem MemoFlow selecionado
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "Usamos o microfone para capturar notas rapidamente por entrada de voz.";
+"NSSpeechRecognitionUsageDescription" = "Usamos reconhecimento de voz para converter sua voz em texto para as notas.";
+
+

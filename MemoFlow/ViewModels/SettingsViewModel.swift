@@ -62,6 +62,11 @@ final class SettingsViewModel {
         set { settings.appFontSize = newValue }
     }
     
+    var appLanguage: AppLanguage {
+        get { settings.appLanguage }
+        set { settings.appLanguage = newValue }
+    }
+    
     // MARK: - Streak Settings
     
     var streakEnabled: Bool {

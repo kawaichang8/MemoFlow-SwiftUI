@@ -1,0 +1,15 @@
+/* 
+  InfoPlist.strings (English)
+  MemoFlow
+  
+  Info.plist localization
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "MemoFlow uses the microphone for voice input to quickly capture your memos.";
+"NSSpeechRecognitionUsageDescription" = "MemoFlow uses speech recognition to convert your voice to text for memos.";
+

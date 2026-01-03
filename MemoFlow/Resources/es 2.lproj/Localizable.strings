@@ -1,0 +1,360 @@
+/* 
+  Localizable.strings (Spanish)
+  MemoFlow
+  
+  Localización en español
+  
+  ⚠️ Agregar manualmente en Xcode:
+  1. Abrir el proyecto en Xcode
+  2. Agregar la carpeta es.lproj (Add Files to "MemoFlow")
+  3. Verificar que Target Membership tenga MemoFlow seleccionado
+*/
+
+// MARK: - Common
+"common.done" = "Listo";
+"common.cancel" = "Cancelar";
+"common.close" = "Cerrar";
+"common.ok" = "OK";
+"common.error" = "Error";
+"common.success" = "Éxito";
+"common.save" = "Guardar";
+"common.delete" = "Eliminar";
+"common.edit" = "Editar";
+"common.send" = "Enviar";
+"common.retry" = "Reintentar";
+"common.settings" = "Ajustes";
+"common.version" = "Versión";
+"common.premium" = "Premium";
+
+// MARK: - Language
+"language.system" = "Configuración del sistema";
+"language.title" = "Idioma";
+"language.description" = "Cambia el idioma de la app. Selecciona 'Configuración del sistema' para seguir automáticamente el idioma de tu dispositivo.";
+"language.restartRequired" = "Los cambios de idioma se aplicarán completamente en el próximo inicio.";
+
+// MARK: - App
+"app.name" = "MemoFlow";
+"app.tagline" = "Hub de Captura GTD";
+"app.description" = "MemoFlow - Hub de Captura GTD";
+
+// MARK: - Main Capture View
+"capture.placeholder" = "Cualquier cosa";
+"capture.speakPrompt" = "Habla ahora...";
+"capture.sendTo" = "Enviar a %@";
+"capture.adopt" = "Adoptar";
+
+// MARK: - Streak
+"streak.title" = "Racha";
+"streak.current" = "Racha actual";
+"streak.longest" = "Récord más largo";
+"streak.total" = "Total de notas";
+"streak.todayComplete" = "¡Nota de hoy completada!";
+"streak.todayNotSent" = "Aún no has enviado hoy";
+"streak.daysConsecutive" = " días seguidos";
+"streak.encouragement" = "¡Envía una nota cada día para mantener tu racha! Activa los recordatorios para recibir una notificación a las 8 PM.";
+
+// MARK: - Destinations
+"destination.notionInbox" = "Bandeja Notion";
+"destination.todoist" = "Todoist";
+"destination.slack" = "Slack";
+"destination.reflect" = "Reflect";
+"destination.emailToSelf" = "Email a mí mismo";
+"destination.task" = "Tarea";
+"destination.note" = "Nota";
+
+// MARK: - Themes
+"theme.system" = "Sistema";
+"theme.light" = "Claro";
+"theme.dark" = "Oscuro";
+"theme.sepia" = "Sepia";
+"theme.blueLightCut" = "Filtro luz azul";
+
+"theme.system.description" = "Seguir configuración del sistema";
+"theme.light.description" = "Pantalla blanca y brillante";
+"theme.dark.description" = "Pantalla negra y oscura";
+"theme.sepia.description" = "Fondo beige cálido";
+"theme.blueLightCut.description" = "Tonos cálidos, fácil para los ojos";
+
+// MARK: - Font Sizes
+"fontSize.standard" = "Estándar";
+"fontSize.large" = "Grande";
+"fontSize.extraLarge" = "Extra grande";
+
+// MARK: - Settings
+"settings.title" = "Ajustes";
+"settings.general" = "General";
+"settings.defaultDestination" = "Destino predeterminado";
+"settings.aiTagSuggestion" = "Sugerencias de etiquetas IA";
+"settings.aiTemplateDetection" = "Detección de plantilla IA";
+"settings.themeAndFont" = "Tema y fuente";
+"settings.themeLabel" = "🎨 Tema: %@";
+"settings.fontSizeLabel" = "📝 Tamaño de fuente: %@";
+"settings.fontSize" = "Tamaño de fuente";
+"settings.theme" = "Tema";
+"settings.preview" = "Vista previa";
+"settings.previewText" = "ABC abc 123 ñ";
+
+// Tag suggestion modes
+"settings.tagMode.autoAdopt" = "Adopción automática";
+"settings.tagMode.suggestOnly" = "Solo sugerir";
+"settings.tagMode.off" = "Desactivado";
+"settings.tagMode.autoAdopt.description" = "🏷️ La IA adopta automáticamente las etiquetas reconocidas. Elimina las que no quieras con ×.";
+"settings.tagMode.suggestOnly.description" = "🏷️ Muestra sugerencias de etiquetas. Toca para adoptar.";
+"settings.tagMode.off.description" = "🏷️ Las sugerencias de etiquetas están desactivadas.";
+
+// Template detection modes
+"settings.templateMode.off" = "Desactivado";
+"settings.templateMode.suggestOnly" = "Solo sugerir";
+"settings.templateMode.autoSwitch" = "Cambio automático";
+"settings.templateMode.off.description" = "📋 La detección de plantillas está desactivada.";
+"settings.templateMode.suggestOnly.description" = "📋 Detecta si tu entrada es una 'tarea' o 'nota' y sugiere el destino mediante un banner.";
+"settings.templateMode.autoSwitch.description" = "📋 La IA cambia automáticamente el destino.";
+
+// Feedback
+"settings.feedback" = "Retroalimentación";
+"settings.hapticFeedback" = "Retroalimentación háptica";
+"settings.sound" = "Sonido";
+
+// Streak settings
+"settings.streak" = "Racha";
+"settings.streakDisplay" = "Mostrar racha";
+"settings.streakReminder" = "Notificación de recordatorio";
+"settings.todayComplete" = "Completado hoy";
+
+// AI settings
+"settings.aiSettings" = "Ajustes de IA";
+"settings.appleIntelligence" = "Apple Intelligence";
+"settings.localAIPriority" = "Preferir IA local";
+"settings.onDevice" = "En dispositivo";
+"settings.localAIPrivacy" = "Las sugerencias de etiquetas se procesan en este dispositivo";
+"settings.localAIEnabled.description" = "🧠 NLP de alta precisión (etiquetado POS, análisis de sentimientos, NER) para sugerencias. Funciona sin conexión.";
+"settings.localAIDisabled.description" = "💡 Solo procesamiento ligero basado en palabras clave. Ahorra batería.";
+
+// API Settings
+"settings.apiKey" = "Clave API";
+"settings.apiToken" = "Token API";
+"settings.databaseId" = "ID de base de datos";
+"settings.projectId" = "ID de proyecto (opcional)";
+"settings.botToken" = "Token del Bot";
+"settings.channelId" = "ID del canal";
+"settings.graphId" = "ID de Graph";
+"settings.emailAddress" = "Correo electrónico";
+"settings.connectionTest" = "Probar conexión";
+
+// Integration headers
+"settings.notion" = "Notion";
+"settings.todoist" = "Todoist";
+"settings.slack" = "Slack";
+"settings.reflect" = "Reflect";
+"settings.emailToSelf" = "Email a mí mismo";
+
+// Integration descriptions
+"settings.notion.description" = "Crea una integración de Notion y otorga acceso a tu base de datos.";
+"settings.todoist.description" = "Obtén tu token API desde Ajustes de Todoist > Integraciones > Desarrollador.";
+"settings.slack.description" = "Crea una App de Slack con los alcances chat:write y channels:read. Obtén el ID del canal haciendo clic derecho en el canal > Copiar enlace.";
+"settings.reflect.description" = "Obtén la clave API desde Ajustes de Reflect > API. El Graph ID es la parte xxxxx en la URL (reflect.app/g/xxxxx). Se añade a la Nota Diaria.";
+"settings.email.description" = "Envía notas a ti mismo por correo. Abre la app de correo del dispositivo.";
+"settings.email.notAvailable" = "La función de correo no está disponible";
+
+// Placeholders
+"settings.placeholder.secret" = "secret_...";
+"settings.placeholder.apiToken" = "Ingresa el token API";
+"settings.placeholder.xoxb" = "xoxb-...";
+"settings.placeholder.apiKey" = "Ingresa la clave API";
+
+// Support
+"settings.support" = "Soporte";
+"settings.helpAndGuide" = "Guía de integración y ayuda";
+"settings.helpDescription" = "Aprende cómo conectar servicios y solucionar problemas.";
+
+// Reset
+"settings.resetAll" = "Restablecer todos los ajustes";
+
+// MARK: - Premium / Subscription
+"premium.title" = "MemoFlow Premium";
+"premium.tagline" = "Captura tus pensamientos, más libremente";
+"premium.upgradeButton" = "Actualizar a Premium";
+"premium.restore" = "Restaurar compra";
+"premium.trial" = "Prueba gratis por 7 días";
+"premium.trialDays" = "Prueba gratis de %d días";
+"premium.autoRenew" = "Se renueva automáticamente a %@ después de la prueba";
+"premium.cancelAnytime" = "Cancela cuando quieras";
+"premium.terms" = "Términos de uso";
+"premium.privacy" = "Política de privacidad";
+"premium.nextRenewal" = "Próxima renovación: %@";
+"premium.manageSubscription" = "Administrar suscripción";
+"premium.badge" = "Premium";
+"premium.features" = "Funciones Premium";
+
+// Premium features
+"premium.feature.unlimited" = "Integraciones ilimitadas";
+"premium.feature.unlimited.description" = "Notion, Todoist, Slack, Reflect, Email\nUsa todas simultáneamente";
+"premium.feature.ai" = "Etiquetas IA avanzadas";
+"premium.feature.ai.description" = "Sugerencias de etiquetas más precisas\npara una organización más fácil";
+"premium.feature.themes" = "Temas personalizados";
+"premium.feature.themes.description" = "Sepia, filtro de luz azul, etc.\nTemas fáciles para los ojos";
+
+// Premium descriptions
+"premium.unlockDescription" = "Desbloquea integraciones ilimitadas, IA avanzada y temas personalizados";
+"premium.trialInfo" = "Prueba gratis de 7 días • Cancela cuando quieras";
+"premium.featureUpsell" = "%@ está disponible con el plan Premium";
+
+// Errors
+"premium.error.purchase" = "Ocurrió un error durante la compra";
+"premium.error.noRestore" = "No se encontraron compras para restaurar";
+"premium.error.restoreFailed" = "Error al restaurar la compra";
+
+// MARK: - Help View
+"help.title" = "Ayuda";
+"help.integrationGuides" = "Guías de integración";
+"help.support" = "Soporte";
+"help.contactUs" = "Contáctanos";
+"help.contactDescription" = "No dudes en contactarnos si tienes alguna pregunta.";
+
+// Quick Start
+"help.quickStart.title" = "Inicio rápido";
+"help.quickStart.subtitle" = "Aprende MemoFlow en 3 minutos";
+"help.quickStart.intro" = "Aprende cómo capturar rápidamente tus pensamientos con MemoFlow.";
+"help.quickStart.header" = "🚀 Inicio rápido en 3 minutos";
+
+"help.quickStart.step1.title" = "Abre la app";
+"help.quickStart.step1.description" = "Al iniciar, aparece inmediatamente la pantalla de entrada de texto. El teclado se muestra automáticamente, para que puedas empezar a escribir de inmediato.";
+"help.quickStart.step1.tip" = "¡Agrega un widget a tu pantalla de inicio para capturar aún más rápido!";
+
+"help.quickStart.step2.title" = "Escribe tu nota";
+"help.quickStart.step2.description" = "Escribe cualquier cosa que se te ocurra. Tareas, ideas, notas—lo que sea. La IA sugerirá etiquetas automáticamente.";
+"help.quickStart.step2.tip" = "Usa el botón del micrófono para entrada por voz.";
+
+"help.quickStart.step3.title" = "Elige el destino";
+"help.quickStart.step3.description" = "Selecciona dónde enviar desde el menú desplegable en la esquina superior derecha. Notion, Todoist, Slack, Reflect y más.";
+"help.quickStart.step3.tip" = "Primero configura tus claves API en Ajustes.";
+
+"help.quickStart.step4.title" = "¡Enviar!";
+"help.quickStart.step4.description" = "Toca el botón de enviar (o desliza hacia arriba) en la parte inferior. ¡Un ✓ confirma el éxito!";
+"help.quickStart.step4.tip" = "¡Envía notas diariamente para construir tu racha!";
+
+"help.quickStart.proTips" = "💡 Consejos Pro";
+"help.quickStart.tip1" = "Desliza hacia arriba para Ajustes, hacia abajo para Historial";
+"help.quickStart.tip2" = "Toca las etiquetas para adoptarlas/eliminarlas";
+"help.quickStart.tip3" = "La IA detecta automáticamente el tipo de nota (tarea/nota)";
+
+// Notion Guide
+"help.notion.title" = "Integración con Notion";
+"help.notion.subtitle" = "Obtén la clave API y configura la base de datos";
+"help.notion.header" = "Guía de integración con Notion";
+"help.notion.intro" = "Conecta Notion y MemoFlow para enviar notas automáticamente a tu base de datos de Notion.";
+
+"help.notion.step1.title" = "Paso 1: Crear integración";
+"help.notion.step1.1" = "Ve a notion.so/my-integrations en tu navegador";
+"help.notion.step1.2" = "Haz clic en '+ Nueva integración'";
+"help.notion.step1.3" = "Ingresa un nombre (ej: MemoFlow)";
+"help.notion.step1.4" = "Selecciona el espacio de trabajo asociado";
+"help.notion.step1.5" = "Haz clic en 'Enviar' para crear";
+"help.notion.step1.tip" = "Copia el 'Token de integración interno' y pégalo en los ajustes de MemoFlow. (Comienza con secret_)";
+"help.notion.step1.screenshot" = "Pantalla de creación de integración";
+
+"help.notion.step2.title" = "Paso 2: Preparar base de datos";
+"help.notion.step2.1" = "Abre la página donde quieres guardar las notas en Notion";
+"help.notion.step2.2" = "Escribe '/database' y selecciona 'Base de datos - Página completa'";
+"help.notion.step2.3" = "Añade estas propiedades:";
+"help.notion.step2.screenshot" = "Configuración de propiedades de la base de datos";
+"help.notion.property.title" = "Título";
+"help.notion.property.content" = "Contenido";
+"help.notion.property.tags" = "Etiquetas";
+"help.notion.property.created" = "Creado";
+"help.notion.propertyType.title" = "Título";
+"help.notion.propertyType.text" = "Texto";
+"help.notion.propertyType.multiSelect" = "Selección múltiple";
+"help.notion.propertyType.date" = "Fecha";
+
+"help.notion.step3.title" = "Paso 3: Otorgar permiso";
+"help.notion.step3.1" = "Abre la página de la base de datos que creaste";
+"help.notion.step3.2" = "Haz clic en el menú '•••' en la esquina superior derecha";
+"help.notion.step3.3" = "Selecciona '+ Agregar conexiones'";
+"help.notion.step3.4" = "Elige la integración que creaste en el Paso 1";
+"help.notion.step3.warning" = "¡Si te saltas este paso, obtendrás un error de 'permiso denegado'!";
+"help.notion.step3.screenshot" = "Menú de agregar conexión";
+
+"help.notion.step4.title" = "Paso 4: Obtener ID de base de datos";
+"help.notion.step4.1" = "Abre la página de la base de datos en tu navegador";
+"help.notion.step4.2" = "Copia la URL";
+"help.notion.urlFormat" = "Formato de URL:";
+"help.notion.urlExample" = "notion.so/workspace/**xxxxxxxx**?v=...";
+"help.notion.step4.tip" = "La parte en negrita (32 caracteres alfanuméricos) es el ID de la base de datos. Pégalo en los ajustes de MemoFlow.";
+
+"help.notion.complete" = "¡Configuración completa!";
+"help.notion.completeDescription" = "Ejecuta 'Probar conexión' en los ajustes de MemoFlow para verificar que la integración funciona.";
+
+// Todoist Guide
+"help.todoist.title" = "Integración con Todoist";
+"help.todoist.subtitle" = "Cómo obtener el token API";
+"help.todoist.header" = "Guía de integración con Todoist";
+"help.todoist.intro" = "Conecta Todoist y MemoFlow para agregar tareas rápidamente.";
+
+"help.todoist.step1.title" = "Paso 1: Obtener token API";
+"help.todoist.step1.1" = "Inicia sesión en Todoist";
+"help.todoist.step1.2" = "Icono de perfil (arriba a la derecha) → 'Ajustes'";
+"help.todoist.step1.3" = "Selecciona la pestaña 'Integraciones'";
+"help.todoist.step1.4" = "Copia 'Token API' en la sección Desarrollador";
+"help.todoist.step1.screenshot" = "Pantalla de ajustes de Todoist";
+
+// Slack Guide
+"help.slack.title" = "Integración con Slack";
+"help.slack.subtitle" = "Crear Bot y configurar canal";
+
+// Reflect Guide
+"help.reflect.title" = "Integración con Reflect";
+"help.reflect.subtitle" = "Obtener clave API y Graph ID";
+
+// Troubleshooting
+"help.troubleshooting.title" = "Solución de problemas";
+"help.troubleshooting.subtitle" = "Errores comunes y soluciones";
+
+// FAQ
+"help.faq.title" = "Preguntas frecuentes";
+"help.faq.subtitle" = "FAQ";
+
+// MARK: - History
+"history.title" = "Historial";
+"history.empty" = "Sin historial";
+"history.resend" = "Reenviar";
+"history.deleteConfirm" = "¿Eliminar esta nota?";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "Bienvenido a MemoFlow";
+"onboarding.getStarted" = "Comenzar";
+"onboarding.next" = "Siguiente";
+"onboarding.skip" = "Omitir";
+
+// MARK: - Errors
+"error.network" = "Error de red";
+"error.sendFailed" = "Error al enviar";
+"error.apiKeyMissing" = "Clave API no configurada";
+"error.unauthorized" = "Error de autenticación";
+"error.notConfigured" = "Configuración incompleta";
+"error.unknown" = "Ocurrió un error desconocido";
+
+// MARK: - Tags (Presets)
+"tag.task" = "Tarea";
+"tag.idea" = "Idea";
+"tag.memo" = "Nota";
+"tag.work" = "Trabajo";
+"tag.private" = "Personal";
+"tag.shopping" = "Compras";
+"tag.meeting" = "Reunión";
+"tag.project" = "Proyecto";
+"tag.health" = "Salud";
+"tag.study" = "Estudio";
+
+// MARK: - Notifications
+"notification.streakReminder.title" = "¿No has enviado una nota hoy?";
+"notification.streakReminder.body" = "¡Envía una nota para mantener tu racha!";
+"notification.streakLost.title" = "Racha reiniciada";
+"notification.streakLost.body" = "¡Empecemos de nuevo mañana!";
+
+// MARK: - Widget
+"widget.quickCapture" = "Captura rápida";
+"widget.tapToCapture" = "Toca para capturar";
+"widget.streak" = "Racha";
+
+

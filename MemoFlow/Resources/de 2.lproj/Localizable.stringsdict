@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 
+    Localizable.stringsdict (German)
+    MemoFlow
+    
+    Pluralisierungsregeln für Deutsch
+    
+    ⚠️ Manuelle Hinzufügung in Xcode erforderlich
+    -->
+    
+    <!-- Days pluralization -->
+    <key>streak.days</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Tag</string>
+            <key>other</key>
+            <string>%d Tage</string>
+        </dict>
+    </dict>
+    
+    <!-- Tags pluralization -->
+    <key>tags.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@tags@</string>
+        <key>tags</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Tag</string>
+            <key>other</key>
+            <string>%d Tags</string>
+        </dict>
+    </dict>
+    
+    <!-- Memos count -->
+    <key>memos.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@memos@</string>
+        <key>memos</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Notiz</string>
+            <key>other</key>
+            <string>%d Notizen</string>
+        </dict>
+    </dict>
+    
+    <!-- Trial days -->
+    <key>premium.trialDaysFormat</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>%d Tag kostenlose Testversion</string>
+            <key>other</key>
+            <string>%d Tage kostenlose Testversion</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
+

@@ -1,0 +1,21 @@
+/* 
+  InfoPlist.strings (French)
+  MemoFlow
+  
+  Localisation de Info.plist
+  
+  ⚠️ Ajout manuel dans Xcode requis:
+  1. Ouvrir le projet dans Xcode
+  2. Ajouter le dossier fr.lproj (Add Files to "MemoFlow")
+  3. Vérifier que Target Membership a MemoFlow sélectionné
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "Nous utilisons le microphone pour capturer rapidement des notes par saisie vocale.";
+"NSSpeechRecognitionUsageDescription" = "Nous utilisons la reconnaissance vocale pour convertir votre voix en texte pour les notes.";
+
+

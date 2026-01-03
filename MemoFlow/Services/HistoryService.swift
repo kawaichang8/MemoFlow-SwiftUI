@@ -18,8 +18,10 @@ final class HistoryService {
     private var modelContainer: ModelContainer?
     private var modelContext: ModelContext?
     
-    /// 最大保持件数
-    private let maxHistoryCount = 100
+    /// 最大保持件数（プレミアム: 無制限=100, 無料: 20）
+    private var maxHistoryCount: Int {
+        PurchaseManager.shared.isPremium ? 100 : 20
+    }
     
     // MARK: - Init
     private init() {

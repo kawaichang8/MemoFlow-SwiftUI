@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 
+    Localizable.stringsdict (Korean)
+    MemoFlow
+    
+    복수형 규칙 (한국어는 복수형 변화가 없어 단순함)
+    
+    ⚠️ Xcode 수동 추가 필요
+    -->
+    
+    <!-- Days pluralization -->
+    <key>streak.days</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d일</string>
+        </dict>
+    </dict>
+    
+    <!-- Tags pluralization -->
+    <key>tags.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@tags@</string>
+        <key>tags</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d개 태그</string>
+        </dict>
+    </dict>
+    
+    <!-- Memos count -->
+    <key>memos.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@memos@</string>
+        <key>memos</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d개 메모</string>
+        </dict>
+    </dict>
+    
+    <!-- Trial days -->
+    <key>premium.trialDaysFormat</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d일 무료 체험</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
+

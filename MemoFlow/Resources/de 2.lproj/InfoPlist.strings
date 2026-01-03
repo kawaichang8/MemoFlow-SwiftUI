@@ -1,0 +1,21 @@
+/* 
+  InfoPlist.strings (German)
+  MemoFlow
+  
+  Info.plist Lokalisierung
+  
+  ⚠️ Manuelle Hinzufügung in Xcode erforderlich:
+  1. Projekt in Xcode öffnen
+  2. Ordner de.lproj hinzufügen (Add Files to "MemoFlow")
+  3. Prüfen, dass Target Membership MemoFlow ausgewählt hat
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "Wir verwenden das Mikrofon, um Notizen schnell per Spracheingabe zu erfassen.";
+"NSSpeechRecognitionUsageDescription" = "Wir verwenden Spracherkennung, um Ihre Stimme in Text für Notizen umzuwandeln.";
+
+

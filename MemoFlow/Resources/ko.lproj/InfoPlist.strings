@@ -1,0 +1,21 @@
+/* 
+  InfoPlist.strings (Korean)
+  MemoFlow
+  
+  Info.plist 로컬라이제이션
+  
+  ⚠️ Xcode 수동 추가 필요:
+  1. Xcode에서 프로젝트를 연 후
+  2. MemoFlow 폴더에서 ko.lproj 폴더를 추가 (Add Files to "MemoFlow")
+  3. Target Membership에 MemoFlow 체크 확인
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "음성 입력으로 메모를 빠르게 캡처하기 위해 마이크를 사용합니다.";
+"NSSpeechRecognitionUsageDescription" = "음성을 텍스트로 변환하여 메모를 작성하기 위해 음성 인식을 사용합니다.";
+
+

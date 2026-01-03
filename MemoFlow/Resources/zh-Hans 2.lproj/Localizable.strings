@@ -1,0 +1,348 @@
+/* 
+  Localizable.strings (Simplified Chinese)
+  MemoFlow
+  
+  简体中文本地化
+*/
+
+// MARK: - Common
+"common.done" = "完成";
+"common.cancel" = "取消";
+"common.close" = "关闭";
+"common.ok" = "好";
+"common.error" = "错误";
+"common.success" = "成功";
+"common.save" = "保存";
+"common.delete" = "删除";
+"common.edit" = "编辑";
+"common.send" = "发送";
+"common.retry" = "重试";
+"common.settings" = "设置";
+"common.version" = "版本";
+"common.premium" = "高级版";
+
+// MARK: - App
+"app.name" = "MemoFlow";
+"app.tagline" = "GTD 捕捉中心";
+"app.description" = "MemoFlow - GTD 捕捉中心";
+
+// MARK: - Main Capture View
+"capture.placeholder" = "随便写点什么";
+"capture.speakPrompt" = "请说话...";
+"capture.sendTo" = "发送到 %@";
+"capture.adopt" = "采用";
+
+// MARK: - Streak
+"streak.title" = "连续记录";
+"streak.current" = "当前连续";
+"streak.longest" = "最长记录";
+"streak.total" = "总备忘录数";
+"streak.todayComplete" = "今日备忘录已完成！";
+"streak.todayNotSent" = "今天还没有发送备忘录";
+"streak.daysConsecutive" = "天连续";
+"streak.encouragement" = "每天发送备忘录来延续你的连续记录！开启提醒后，晚上8点会收到通知。";
+
+// MARK: - Destinations
+"destination.notionInbox" = "Notion 收件箱";
+"destination.todoist" = "Todoist";
+"destination.slack" = "Slack";
+"destination.reflect" = "Reflect";
+"destination.emailToSelf" = "发邮件给自己";
+"destination.task" = "任务";
+"destination.note" = "笔记";
+
+// MARK: - Themes
+"theme.system" = "跟随系统";
+"theme.light" = "浅色";
+"theme.dark" = "深色";
+"theme.sepia" = "复古";
+"theme.blueLightCut" = "护眼模式";
+
+"theme.system.description" = "跟随系统设置";
+"theme.light.description" = "纯白明亮界面";
+"theme.dark.description" = "纯黑暗色界面";
+"theme.sepia.description" = "温暖米色背景";
+"theme.blueLightCut.description" = "暖色调护眼模式";
+
+// MARK: - Font Sizes
+"fontSize.standard" = "标准";
+"fontSize.large" = "大";
+"fontSize.extraLarge" = "特大";
+
+// MARK: - Settings
+"settings.title" = "设置";
+"settings.general" = "通用";
+"settings.defaultDestination" = "默认发送目标";
+"settings.aiTagSuggestion" = "AI 标签建议";
+"settings.aiTemplateDetection" = "AI 模板识别";
+"settings.themeAndFont" = "主题和字体";
+"settings.themeLabel" = "🎨 主题: %@";
+"settings.fontSizeLabel" = "📝 字体大小: %@";
+"settings.fontSize" = "字体大小";
+"settings.theme" = "主题";
+"settings.preview" = "预览";
+"settings.previewText" = "你好 ABC 123";
+
+// Tag suggestion modes
+"settings.tagMode.autoAdopt" = "自动采用";
+"settings.tagMode.suggestOnly" = "仅建议";
+"settings.tagMode.off" = "关闭";
+"settings.tagMode.autoAdopt.description" = "🏷️ AI 自动采用识别的标签。可点击 × 删除不需要的标签。";
+"settings.tagMode.suggestOnly.description" = "🏷️ 显示标签建议，点击采用。";
+"settings.tagMode.off.description" = "🏷️ 不显示标签建议。";
+
+// Template detection modes
+"settings.templateMode.off" = "关闭";
+"settings.templateMode.suggestOnly" = "仅建议";
+"settings.templateMode.autoSwitch" = "自动切换";
+"settings.templateMode.off.description" = "📋 不使用模板识别。";
+"settings.templateMode.suggestOnly.description" = "📋 识别输入内容是「任务」还是「笔记」，通过横幅建议发送目标。";
+"settings.templateMode.autoSwitch.description" = "📋 AI 自动切换发送目标。";
+
+// Feedback
+"settings.feedback" = "反馈";
+"settings.hapticFeedback" = "触觉反馈";
+"settings.sound" = "声音";
+
+// Streak settings
+"settings.streak" = "连续记录";
+"settings.streakDisplay" = "显示连续记录";
+"settings.streakReminder" = "提醒通知";
+"settings.todayComplete" = "今日已完成";
+
+// AI settings
+"settings.aiSettings" = "AI 设置";
+"settings.appleIntelligence" = "Apple Intelligence";
+"settings.localAIPriority" = "优先使用本地 AI";
+"settings.onDevice" = "设备端处理";
+"settings.localAIPrivacy" = "标签建议在设备上处理";
+"settings.localAIEnabled.description" = "🧠 使用高精度 NLP（词性分析、情感分析、命名实体识别）建议标签。支持离线使用。";
+"settings.localAIDisabled.description" = "💡 仅使用轻量关键词处理。节省电量。";
+
+// API Settings
+"settings.apiKey" = "API 密钥";
+"settings.apiToken" = "API 令牌";
+"settings.databaseId" = "数据库 ID";
+"settings.projectId" = "项目 ID（可选）";
+"settings.botToken" = "Bot 令牌";
+"settings.channelId" = "频道 ID";
+"settings.graphId" = "Graph ID";
+"settings.emailAddress" = "邮箱地址";
+"settings.connectionTest" = "测试连接";
+
+// Integration headers
+"settings.notion" = "Notion";
+"settings.todoist" = "Todoist";
+"settings.slack" = "Slack";
+"settings.reflect" = "Reflect";
+"settings.emailToSelf" = "发邮件给自己";
+
+// Integration descriptions
+"settings.notion.description" = "创建 Notion 集成并授权访问数据库。";
+"settings.todoist.description" = "从 Todoist 设置 > 集成 > 开发者 获取 API 令牌。";
+"settings.slack.description" = "创建 Slack App 并添加 chat:write 和 channels:read 权限。右键频道 > 复制链接获取频道 ID。";
+"settings.reflect.description" = "从 Reflect 设置 > API 获取 API 密钥。Graph ID 是 URL (reflect.app/g/xxxxx) 中的 xxxxx 部分。追加到每日笔记。";
+"settings.email.description" = "将备忘录发送到自己的邮箱。会打开设备的邮件应用。";
+"settings.email.notAvailable" = "邮件功能不可用";
+
+// Placeholders
+"settings.placeholder.secret" = "secret_...";
+"settings.placeholder.apiToken" = "输入 API 令牌";
+"settings.placeholder.xoxb" = "xoxb-...";
+"settings.placeholder.apiKey" = "输入 API 密钥";
+
+// Support
+"settings.support" = "支持";
+"settings.helpAndGuide" = "集成指南和帮助";
+"settings.helpDescription" = "了解如何连接服务和解决问题。";
+
+// Reset
+"settings.resetAll" = "重置所有设置";
+
+// MARK: - Premium / Subscription
+"premium.title" = "MemoFlow 高级版";
+"premium.tagline" = "更自由地捕捉你的想法";
+"premium.upgradeButton" = "升级到高级版";
+"premium.restore" = "恢复购买";
+"premium.trial" = "免费试用 7 天";
+"premium.trialDays" = "%d 天免费试用";
+"premium.autoRenew" = "试用结束后以 %@ 自动续订";
+"premium.cancelAnytime" = "随时可以取消";
+"premium.terms" = "使用条款";
+"premium.privacy" = "隐私政策";
+"premium.nextRenewal" = "下次续订: %@";
+"premium.manageSubscription" = "管理订阅";
+"premium.badge" = "高级版";
+"premium.features" = "高级版功能";
+
+// Premium features
+"premium.feature.unlimited" = "无限集成";
+"premium.feature.unlimited.description" = "Notion、Todoist、Slack、Reflect、邮件\n全部同时使用";
+"premium.feature.ai" = "高级 AI 标签";
+"premium.feature.ai.description" = "更精准的标签建议\n让整理更轻松";
+"premium.feature.themes" = "自定义主题";
+"premium.feature.themes.description" = "复古、护眼模式等\n保护眼睛的主题";
+
+// Premium descriptions
+"premium.unlockDescription" = "解锁无限集成、高级 AI 和自定义主题";
+"premium.trialInfo" = "7 天免费试用 • 随时取消";
+"premium.featureUpsell" = "%@ 需要高级版";
+
+// Errors
+"premium.error.purchase" = "购买过程中发生错误";
+"premium.error.noRestore" = "没有找到可恢复的购买";
+"premium.error.restoreFailed" = "恢复购买失败";
+
+// MARK: - Help View
+"help.title" = "帮助";
+"help.integrationGuides" = "集成指南";
+"help.support" = "支持";
+"help.contactUs" = "联系我们";
+"help.contactDescription" = "如有问题，欢迎随时联系我们。";
+
+// Quick Start
+"help.quickStart.title" = "快速入门";
+"help.quickStart.subtitle" = "3 分钟了解 MemoFlow";
+"help.quickStart.intro" = "学习如何使用 MemoFlow 快速捕捉你的想法。";
+"help.quickStart.header" = "🚀 3 分钟快速入门";
+
+"help.quickStart.step1.title" = "打开应用";
+"help.quickStart.step1.description" = "启动后立即显示文本输入界面。键盘自动弹出，可以立即开始输入。";
+"help.quickStart.step1.tip" = "在主屏幕添加小组件，捕捉更快！";
+
+"help.quickStart.step2.title" = "写下备忘录";
+"help.quickStart.step2.description" = "输入任何想到的内容。任务、想法、笔记——什么都可以。AI 会自动建议标签。";
+"help.quickStart.step2.tip" = "使用麦克风按钮进行语音输入。";
+
+"help.quickStart.step3.title" = "选择发送目标";
+"help.quickStart.step3.description" = "从右上角的下拉菜单选择发送目标。支持 Notion、Todoist、Slack、Reflect 等。";
+"help.quickStart.step3.tip" = "请先在设置中配置 API 密钥。";
+
+"help.quickStart.step4.title" = "发送！";
+"help.quickStart.step4.description" = "点击底部的发送按钮（或向上滑动）。看到 ✓ 表示成功！";
+"help.quickStart.step4.tip" = "每天发送备忘录来累积连续记录！";
+
+"help.quickStart.proTips" = "💡 专业技巧";
+"help.quickStart.tip1" = "向上滑动打开设置，向下滑动查看历史";
+"help.quickStart.tip2" = "点击标签来采用或移除";
+"help.quickStart.tip3" = "AI 自动识别备忘录类型（任务/笔记）";
+
+// Notion Guide
+"help.notion.title" = "Notion 集成";
+"help.notion.subtitle" = "获取 API 密钥并设置数据库";
+"help.notion.header" = "Notion 集成指南";
+"help.notion.intro" = "连接 Notion 和 MemoFlow，自动将备忘录发送到 Notion 数据库。";
+
+"help.notion.step1.title" = "步骤 1: 创建集成";
+"help.notion.step1.1" = "在浏览器中访问 notion.so/my-integrations";
+"help.notion.step1.2" = "点击「+ 新建集成」";
+"help.notion.step1.3" = "输入名称（例如: MemoFlow）";
+"help.notion.step1.4" = "选择关联的工作区";
+"help.notion.step1.5" = "点击「提交」完成创建";
+"help.notion.step1.tip" = "复制「Internal Integration Token」并粘贴到 MemoFlow 设置中。（以 secret_ 开头的字符串）";
+"help.notion.step1.screenshot" = "集成创建界面";
+
+"help.notion.step2.title" = "步骤 2: 准备数据库";
+"help.notion.step2.1" = "在 Notion 中打开要保存备忘录的页面";
+"help.notion.step2.2" = "输入「/database」并选择「数据库 - 整页」";
+"help.notion.step2.3" = "添加以下属性:";
+"help.notion.step2.screenshot" = "数据库属性设置";
+"help.notion.property.title" = "标题";
+"help.notion.property.content" = "Content";
+"help.notion.property.tags" = "Tags";
+"help.notion.property.created" = "Created";
+"help.notion.propertyType.title" = "标题";
+"help.notion.propertyType.text" = "文本";
+"help.notion.propertyType.multiSelect" = "多选";
+"help.notion.propertyType.date" = "日期";
+
+"help.notion.step3.title" = "步骤 3: 授予权限";
+"help.notion.step3.1" = "打开创建的数据库页面";
+"help.notion.step3.2" = "点击右上角的「•••」菜单";
+"help.notion.step3.3" = "选择「+ 添加连接」";
+"help.notion.step3.4" = "选择步骤 1 中创建的集成";
+"help.notion.step3.warning" = "跳过此步骤会导致「权限被拒绝」错误！";
+"help.notion.step3.screenshot" = "添加连接菜单";
+
+"help.notion.step4.title" = "步骤 4: 获取数据库 ID";
+"help.notion.step4.1" = "在浏览器中打开数据库页面";
+"help.notion.step4.2" = "复制 URL";
+"help.notion.urlFormat" = "URL 格式:";
+"help.notion.urlExample" = "notion.so/workspace/**xxxxxxxx**?v=...";
+"help.notion.step4.tip" = "粗体部分（32 位字母数字）是数据库 ID。粘贴到 MemoFlow 设置中。";
+
+"help.notion.complete" = "设置完成！";
+"help.notion.completeDescription" = "在 MemoFlow 设置中运行「测试连接」，验证集成是否正常工作。";
+
+// Todoist Guide
+"help.todoist.title" = "Todoist 集成";
+"help.todoist.subtitle" = "如何获取 API 令牌";
+"help.todoist.header" = "Todoist 集成指南";
+"help.todoist.intro" = "连接 Todoist 和 MemoFlow，快速添加任务。";
+
+"help.todoist.step1.title" = "步骤 1: 获取 API 令牌";
+"help.todoist.step1.1" = "登录 Todoist";
+"help.todoist.step1.2" = "点击右上角头像 → 「设置」";
+"help.todoist.step1.3" = "选择「集成」标签";
+"help.todoist.step1.4" = "在开发者部分复制「API 令牌」";
+"help.todoist.step1.screenshot" = "Todoist 设置界面";
+
+// Slack Guide
+"help.slack.title" = "Slack 集成";
+"help.slack.subtitle" = "创建 Bot 并设置频道";
+
+// Reflect Guide
+"help.reflect.title" = "Reflect 集成";
+"help.reflect.subtitle" = "获取 API 密钥和 Graph ID";
+
+// Troubleshooting
+"help.troubleshooting.title" = "故障排除";
+"help.troubleshooting.subtitle" = "常见错误和解决方法";
+
+// FAQ
+"help.faq.title" = "常见问题";
+"help.faq.subtitle" = "FAQ";
+
+// MARK: - History
+"history.title" = "历史";
+"history.empty" = "暂无历史";
+"history.resend" = "重新发送";
+"history.deleteConfirm" = "删除这条备忘录？";
+
+// MARK: - Onboarding
+"onboarding.welcome" = "欢迎使用 MemoFlow";
+"onboarding.getStarted" = "开始使用";
+"onboarding.next" = "下一步";
+"onboarding.skip" = "跳过";
+
+// MARK: - Errors
+"error.network" = "网络错误";
+"error.sendFailed" = "发送失败";
+"error.apiKeyMissing" = "未配置 API 密钥";
+"error.unauthorized" = "认证错误";
+"error.notConfigured" = "设置未完成";
+"error.unknown" = "发生未知错误";
+
+// MARK: - Tags (Presets)
+"tag.task" = "任务";
+"tag.idea" = "想法";
+"tag.memo" = "备忘";
+"tag.work" = "工作";
+"tag.private" = "私人";
+"tag.shopping" = "购物";
+"tag.meeting" = "会议";
+"tag.project" = "项目";
+"tag.health" = "健康";
+"tag.study" = "学习";
+
+// MARK: - Notifications
+"notification.streakReminder.title" = "今天还没发备忘录？";
+"notification.streakReminder.body" = "发送一条备忘录来保持连续记录！";
+"notification.streakLost.title" = "连续记录已重置";
+"notification.streakLost.body" = "明天重新开始吧！";
+
+// MARK: - Widget
+"widget.quickCapture" = "快速捕捉";
+"widget.tapToCapture" = "点击捕捉";
+"widget.streak" = "连续记录";
+

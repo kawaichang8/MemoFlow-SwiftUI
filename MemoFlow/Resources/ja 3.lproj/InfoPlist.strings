@@ -1,0 +1,15 @@
+/* 
+  InfoPlist.strings (Japanese)
+  MemoFlow
+  
+  Info.plist のローカライズ
+*/
+
+/* App Name */
+"CFBundleDisplayName" = "MemoFlow";
+"CFBundleName" = "MemoFlow";
+
+/* Permission Descriptions */
+"NSMicrophoneUsageDescription" = "音声入力でメモを素早くキャプチャするためにマイクを使用します。";
+"NSSpeechRecognitionUsageDescription" = "音声をテキストに変換してメモを作成するために音声認識を使用します。";
+

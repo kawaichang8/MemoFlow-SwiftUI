@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 日数 (days) -->
+    <key>streak.days</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d日</string>
+        </dict>
+    </dict>
+    
+    <!-- メモ数 (memos) -->
+    <key>memo.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@memos@</string>
+        <key>memos</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d件</string>
+        </dict>
+    </dict>
+    
+    <!-- 履歴件数 (history items) -->
+    <key>history.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@items@</string>
+        <key>items</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d件の履歴</string>
+        </dict>
+    </dict>
+    
+    <!-- タグ数 (tags) -->
+    <key>tag.count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@tags@</string>
+        <key>tags</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d個のタグ</string>
+        </dict>
+    </dict>
+    
+    <!-- トライアル日数 (trial days) -->
+    <key>premium.trialDays</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@days@</string>
+        <key>days</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>other</key>
+            <string>%d日間無料トライアル</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
+

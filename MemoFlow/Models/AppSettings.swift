@@ -19,6 +19,7 @@ final class AppSettings {
         static let tagAutoMode = "tagAutoMode"
         static let templateSuggestionMode = "templateSuggestionMode"
         static let localAIEnabled = "localAIEnabled"
+        static let appLanguage = "appLanguage"
         static let notionAPIKey = "notionAPIKey"
         static let notionDatabaseId = "notionDatabaseId"
         static let todoistAPIKey = "todoistAPIKey"
@@ -98,6 +99,34 @@ final class AppSettings {
         }
         set {
             defaults.set(newValue, forKey: Keys.localAIEnabled)
+        }
+    }
+    
+    // MARK: - Language Settings
+    
+    /// 言語変更通知の名前
+    static let languageDidChangeNotification = Notification.Name("AppSettings.languageDidChange")
+    
+    /// アプリ言語（nil = システム設定に従う）
+    var appLanguage: AppLanguage {
+        get {
+            guard let raw = defaults.string(forKey: Keys.appLanguage),
+                  let lang = AppLanguage(rawValue: raw) else {
+                return .system
+            }
+            return lang
+        }
+        set {
+            let oldValue = appLanguage
+            defaults.set(newValue.rawValue, forKey: Keys.appLanguage)
+            // 言語が変更されたら通知を送信
+            if oldValue != newValue {
+                NotificationCenter.default.post(
+                    name: Self.languageDidChangeNotification,
+                    object: nil,
+                    userInfo: ["newLanguage": newValue]
+                )
+            }
         }
     }
     

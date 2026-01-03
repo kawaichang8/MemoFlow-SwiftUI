@@ -103,14 +103,30 @@ struct HelpView: View {
                     Text("サポート")
                 }
                 
+                // サブスクリプション管理
+                Section {
+                    NavigationLink {
+                        SubscriptionGuideView()
+                    } label: {
+                        HelpRow(
+                            icon: "creditcard.fill",
+                            iconColor: .purple,
+                            title: "サブスクリプション管理",
+                            subtitle: "プラン変更・解約方法"
+                        )
+                    }
+                } header: {
+                    Text("プレミアム")
+                }
+                
                 // お問い合わせ
                 Section {
-                    Link(destination: URL(string: "mailto:support@memoflow.app")!) {
+                    Link(destination: URL(string: "mailto:support@33dept.com")!) {
                         HelpRow(
                             icon: "envelope.fill",
                             iconColor: .blue,
                             title: "お問い合わせ",
-                            subtitle: "support@memoflow.app"
+                            subtitle: "support@33dept.com"
                         )
                     }
                 } footer: {
@@ -251,7 +267,7 @@ struct NotionGuideView: View {
                         NumberedStep(number: 4, text: "関連ワークスペースを選択")
                         NumberedStep(number: 5, text: "「送信」で作成完了")
                         
-                        // スクショプレースホルダー
+                        // スクリーンショット
                         ScreenshotPlaceholder(description: "インテグレーション作成画面")
                         
                         InfoBox(
@@ -683,7 +699,7 @@ struct TroubleshootingView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     
-                    Link(destination: URL(string: "mailto:support@memoflow.app")!) {
+                    Link(destination: URL(string: "mailto:support@33dept.com?subject=MemoFlow%20サポート")!) {
                         Label("サポートに連絡", systemImage: "envelope.fill")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
@@ -706,6 +722,179 @@ struct TroubleshootingView: View {
     }
 }
 
+// MARK: - Subscription Guide View
+struct SubscriptionGuideView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                // ヘッダー
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "creditcard.fill")
+                            .font(.title)
+                            .foregroundStyle(.purple)
+                        Text("サブスクリプション管理")
+                            .font(.title.bold())
+                    }
+                    Text("プレミアムプランの確認・変更・解約方法をご案内します。")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Divider()
+                
+                // 現在のプラン確認
+                GuideSection(title: "現在のプランを確認") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        NumberedStep(number: 1, text: "MemoFlowアプリを開く")
+                        NumberedStep(number: 2, text: "上にスワイプして設定画面を開く")
+                        NumberedStep(number: 3, text: "「プレミアム管理」セクションで現在のステータスを確認")
+                        
+                        InfoBox(
+                            icon: "info.circle.fill",
+                            color: .blue,
+                            text: "無料トライアル中の場合は、残り日数も表示されます。"
+                        )
+                    }
+                }
+                
+                // プラン変更
+                GuideSection(title: "プランを変更する") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        NumberedStep(number: 1, text: "iPhoneの「設定」アプリを開く")
+                        NumberedStep(number: 2, text: "上部の「Apple ID」（あなたの名前）をタップ")
+                        NumberedStep(number: 3, text: "「サブスクリプション」をタップ")
+                        NumberedStep(number: 4, text: "「MemoFlow」を選択")
+                        NumberedStep(number: 5, text: "希望のプラン（月額/年額）を選択")
+                        
+                        InfoBox(
+                            icon: "lightbulb.fill",
+                            color: .yellow,
+                            text: "年額プランは月額に比べて2ヶ月分お得です！"
+                        )
+                    }
+                }
+                
+                // 解約手順
+                GuideSection(title: "サブスクリプションを解約する") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("以下の手順でいつでも解約できます：")
+                            .font(.subheadline)
+                        
+                        NumberedStep(number: 1, text: "iPhoneの「設定」アプリを開く")
+                        NumberedStep(number: 2, text: "上部の「Apple ID」（あなたの名前）をタップ")
+                        NumberedStep(number: 3, text: "「サブスクリプション」をタップ")
+                        NumberedStep(number: 4, text: "「MemoFlow」を選択")
+                        NumberedStep(number: 5, text: "「サブスクリプションをキャンセル」をタップ")
+                        NumberedStep(number: 6, text: "確認画面で「確認」をタップ")
+                        
+                        InfoBox(
+                            icon: "exclamationmark.triangle.fill",
+                            color: .orange,
+                            text: "解約しても、現在の請求期間終了までプレミアム機能を引き続きご利用いただけます。"
+                        )
+                    }
+                }
+                
+                // クイックリンク
+                GuideSection(title: "ワンタップで管理画面を開く") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("MemoFlowの設定画面から直接Appleのサブスクリプション管理画面を開くこともできます。")
+                            .font(.subheadline)
+                        
+                        Button {
+                            PurchaseManager.shared.openSubscriptionManagement()
+                        } label: {
+                            HStack {
+                                Image(systemName: "arrow.up.right.square.fill")
+                                Text("サブスクリプション管理を開く")
+                            }
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.purple)
+                            .foregroundStyle(.white)
+                            .cornerRadius(12)
+                        }
+                    }
+                }
+                
+                // よくある質問
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("💡 よくある質問")
+                        .font(.headline)
+                    
+                    FAQMiniItem(
+                        question: "解約後もデータは残りますか？",
+                        answer: "はい、メモや設定はそのまま残ります。プレミアム機能のみ使用できなくなります。"
+                    )
+                    
+                    FAQMiniItem(
+                        question: "無料トライアル中に解約したら課金されますか？",
+                        answer: "いいえ、トライアル期間中に解約すれば課金されません。"
+                    )
+                    
+                    FAQMiniItem(
+                        question: "解約を取り消せますか？",
+                        answer: "請求期間が終了する前であれば、同じ画面から再度登録できます。"
+                    )
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(.secondarySystemBackground))
+                )
+                
+                // サポート
+                VStack(spacing: 12) {
+                    Text("😕 問題が解決しない場合")
+                        .font(.headline)
+                    
+                    Text("サブスクリプションに関するご質問は、お気軽にお問い合わせください。")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    
+                    Link(destination: URL(string: "mailto:support@33dept.com?subject=MemoFlow%20サブスクリプションについて")!) {
+                        Label("サポートに連絡", systemImage: "envelope.fill")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundStyle(.white)
+                            .cornerRadius(12)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.blue.opacity(0.1))
+                )
+            }
+            .padding()
+        }
+        .navigationTitle("サブスクリプション管理")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - FAQ Mini Item (for Subscription Guide)
+struct FAQMiniItem: View {
+    let question: String
+    let answer: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Q: \(question)")
+                .font(.subheadline.bold())
+            Text("A: \(answer)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 // MARK: - FAQ View
 struct FAQView: View {
     var body: some View {
@@ -713,7 +902,17 @@ struct FAQView: View {
             VStack(alignment: .leading, spacing: 16) {
                 FAQItem(
                     question: "無料で使えますか？",
-                    answer: "はい、MemoFlow本体は無料でお使いいただけます。ただし、連携先サービス（Notion、Todoist等）は各サービスの利用規約・料金体系に従います。"
+                    answer: "はい、基本機能は無料でお使いいただけます。プレミアムプラン（月額¥480 / 年額¥4,800）にアップグレードすると、無制限連携、高度AI機能、カスタムテーマなどが利用できます。7日間の無料トライアルもあります。"
+                )
+                
+                FAQItem(
+                    question: "サブスクリプションを解約するには？",
+                    answer: "iPhoneの「設定」→「Apple ID」→「サブスクリプション」→「MemoFlow」→「サブスクリプションをキャンセル」で解約できます。解約後も請求期間終了までプレミアム機能を利用できます。"
+                )
+                
+                FAQItem(
+                    question: "無料トライアル中に解約したら課金されますか？",
+                    answer: "いいえ、トライアル期間（7日間）中に解約すれば課金されません。安心してお試しください。"
                 )
                 
                 FAQItem(
@@ -1301,6 +1500,12 @@ struct OnboardingPageView: View {
 #Preview("Troubleshooting") {
     NavigationStack {
         TroubleshootingView()
+    }
+}
+
+#Preview("Subscription Guide") {
+    NavigationStack {
+        SubscriptionGuideView()
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 
 // MARK: - App Theme
 enum AppTheme: String, CaseIterable, Identifiable, Codable {
+    case system = "system"
     case light = "light"
     case dark = "dark"
     case sepia = "sepia"
@@ -20,6 +21,8 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     /// 表示名
     var displayName: String {
         switch self {
+        case .system:
+            return "システム"
         case .light:
             return "ライト"
         case .dark:
@@ -34,6 +37,8 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     /// アイコン名
     var iconName: String {
         switch self {
+        case .system:
+            return "circle.lefthalf.filled"
         case .light:
             return "sun.max"
         case .dark:
@@ -48,6 +53,8 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     /// 説明
     var description: String {
         switch self {
+        case .system:
+            return "システム設定に従う"
         case .light:
             return "純白の明るい画面"
         case .dark:
@@ -62,6 +69,8 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     /// プレビュー用の色
     var previewColor: Color {
         switch self {
+        case .system:
+            return Color(.systemBackground)
         case .light:
             return .white
         case .dark:
@@ -76,11 +85,33 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     /// システムのColorSchemeに対応するか
     var colorScheme: ColorScheme? {
         switch self {
+        case .system:
+            return nil // システム設定に従う
         case .light, .sepia, .blueLightCut:
             return .light
         case .dark:
             return .dark
         }
+    }
+    
+    /// プレミアム限定か
+    var isPremiumOnly: Bool {
+        switch self {
+        case .system, .light, .dark:
+            return false
+        case .sepia, .blueLightCut:
+            return true
+        }
+    }
+    
+    /// 無料テーマのみ
+    static var freeThemes: [AppTheme] {
+        [.system, .light, .dark]
+    }
+    
+    /// プレミアムテーマ
+    static var premiumThemes: [AppTheme] {
+        [.sepia, .blueLightCut]
     }
 }
 
@@ -172,31 +203,41 @@ final class ThemeManager {
         static let fontSize = "appFontSize"
     }
     
-    /// 現在のテーマ
+    /// 現在のテーマ（stored property for @Observable）
     var currentTheme: AppTheme {
-        get {
-            guard let raw = defaults.string(forKey: Keys.theme),
-                  let theme = AppTheme(rawValue: raw) else {
-                return .light
+        didSet {
+            // プレミアムテーマの場合はプレミアムチェック
+            if currentTheme.isPremiumOnly && !PurchaseManager.shared.isPremium {
+                // プレミアムでない場合は元に戻す
+                currentTheme = oldValue
+                return
             }
-            return theme
-        }
-        set {
-            defaults.set(newValue.rawValue, forKey: Keys.theme)
+            defaults.set(currentTheme.rawValue, forKey: Keys.theme)
         }
     }
     
-    /// 現在のフォントサイズ
+    /// 現在のフォントサイズ（stored property for @Observable）
     var fontSize: AppFontSize {
-        get {
-            guard let raw = defaults.string(forKey: Keys.fontSize),
-                  let size = AppFontSize(rawValue: raw) else {
-                return .standard
-            }
-            return size
+        didSet {
+            defaults.set(fontSize.rawValue, forKey: Keys.fontSize)
         }
-        set {
-            defaults.set(newValue.rawValue, forKey: Keys.fontSize)
+    }
+    
+    // MARK: - Init
+    private init() {
+        // UserDefaultsから初期値を読み込み
+        if let raw = defaults.string(forKey: Keys.theme),
+           let theme = AppTheme(rawValue: raw) {
+            self.currentTheme = theme
+        } else {
+            self.currentTheme = .system
+        }
+        
+        if let raw = defaults.string(forKey: Keys.fontSize),
+           let size = AppFontSize(rawValue: raw) {
+            self.fontSize = size
+        } else {
+            self.fontSize = .standard
         }
     }
     
@@ -205,6 +246,8 @@ final class ThemeManager {
     /// 背景色
     var backgroundColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.systemBackground)
         case .light:
             return .white
         case .dark:
@@ -219,6 +262,8 @@ final class ThemeManager {
     /// セカンダリ背景色
     var secondaryBackgroundColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.secondarySystemBackground)
         case .light:
             return Color(white: 0.96)
         case .dark:
@@ -233,6 +278,8 @@ final class ThemeManager {
     /// テキスト色
     var textColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.label)
         case .light:
             return .black
         case .dark:
@@ -247,6 +294,8 @@ final class ThemeManager {
     /// セカンダリテキスト色
     var secondaryTextColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.secondaryLabel)
         case .light:
             return Color(white: 0.4)
         case .dark:
@@ -261,6 +310,8 @@ final class ThemeManager {
     /// ターシャリテキスト色
     var tertiaryTextColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.tertiaryLabel)
         case .light:
             return Color(white: 0.6)
         case .dark:
@@ -280,8 +331,8 @@ final class ThemeManager {
     /// 送信ボタン背景色
     var sendButtonBackgroundColor: Color {
         switch currentTheme {
-        case .light, .sepia, .blueLightCut:
-            return .black
+        case .system, .light, .sepia, .blueLightCut:
+            return .primary
         case .dark:
             return .white
         }
@@ -290,6 +341,8 @@ final class ThemeManager {
     /// 送信ボタンアイコン色
     var sendButtonIconColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.systemBackground)
         case .light, .sepia, .blueLightCut:
             return .white
         case .dark:
@@ -300,6 +353,8 @@ final class ThemeManager {
     /// セパレーター色
     var separatorColor: Color {
         switch currentTheme {
+        case .system:
+            return Color(.separator)
         case .light:
             return Color(white: 0.85)
         case .dark:
@@ -326,14 +381,11 @@ final class ThemeManager {
         separatorColor
     }
     
-    // MARK: - Init
-    private init() {}
-    
     // MARK: - Methods
     
     /// テーマをリセット
     func reset() {
-        currentTheme = .light
+        defaults.set(AppTheme.system.rawValue, forKey: Keys.theme)
         fontSize = .standard
     }
 }

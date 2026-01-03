@@ -11,89 +11,188 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = SettingsViewModel()
     @State private var showHelp = false
+    @State private var showPaywall = false
+    @State private var purchaseManager = PurchaseManager.shared
     
     var body: some View {
         NavigationStack {
             List {
+                // プレミアム管理
+                Section {
+                    if purchaseManager.isPremium {
+                        // プレミアム会員
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Text(purchaseManager.subscriptionStatusText)
+                                        .font(.subheadline.bold())
+                                    PremiumBadge()
+                                }
+                                if let expDate = purchaseManager.formattedExpirationDate {
+                                    Text(L10n.Premium.nextRenewal(expDate))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer()
+                        }
+                        
+                        Button {
+                            purchaseManager.openSubscriptionManagement()
+                        } label: {
+                            HStack {
+                                Text(L10n.Premium.manageSubscription)
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption)
+                            }
+                        }
+                    } else {
+                        // 無料会員
+                        Button {
+                            showPaywall = true
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Image(systemName: "crown.fill")
+                                            .foregroundStyle(.orange)
+                                        Text(L10n.Premium.upgradeButton)
+                                            .font(.headline)
+                                            .foregroundStyle(.primary)
+                                    }
+                                    Text(L10n.Premium.unlockDescription)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        
+                        Button {
+                            Task {
+                                try? await purchaseManager.restorePurchases()
+                            }
+                        } label: {
+                            Text(L10n.Premium.restore)
+                                .foregroundStyle(.blue)
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text(L10n.Common.premium)
+                        Spacer()
+                        if purchaseManager.isPremium {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                                .font(.caption)
+                        }
+                    }
+                } footer: {
+                    if !purchaseManager.isPremium {
+                        Text(L10n.Premium.trialInfo)
+                    }
+                }
+                
+                // 言語設定
+                Section {
+                    Picker(String(localized: "language.title"), selection: $viewModel.appLanguage) {
+                        ForEach(AppLanguage.allCases) { lang in
+                            Text(lang.displayName)
+                                .tag(lang)
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Image(systemName: "globe")
+                            .foregroundStyle(.blue)
+                        Text(String(localized: "language.title"))
+                    }
+                } footer: {
+                    Text(String(localized: "language.description"))
+                }
+                
                 // テーマ設定
                 Section {
                     // テーマ選択
-                    ThemePicker(selectedTheme: $viewModel.appTheme)
+                    ThemePicker(selectedTheme: $viewModel.appTheme, showPaywall: $showPaywall)
                     
                     // フォントサイズ
-                    Picker("文字サイズ", selection: $viewModel.appFontSize) {
+                    Picker(L10n.Settings.fontSize, selection: $viewModel.appFontSize) {
                         ForEach(AppFontSize.allCases) { size in
-                            Text(size.displayName)
+                            Text(size.localizedDisplayName)
                                 .tag(size)
                         }
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    Text("テーマ & フォント")
+                    Text(L10n.Settings.themeAndFont)
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("🎨 テーマ: \(viewModel.appTheme.description)")
-                        Text("📝 文字サイズ: \(viewModel.appFontSize.displayName)")
+                        Text(L10n.Settings.themeLabel(viewModel.appTheme.localizedDescription))
+                        Text(L10n.Settings.fontSizeLabel(viewModel.appFontSize.localizedDisplayName))
                     }
                 }
                 
                 // 一般設定
                 Section {
                     // デフォルト送信先
-                    Picker("デフォルト送信先", selection: $viewModel.defaultDestination) {
+                    Picker(L10n.Settings.defaultDestination, selection: $viewModel.defaultDestination) {
                         ForEach(Destination.allCases) { destination in
-                            Label(destination.displayName, systemImage: destination.iconName)
+                            Label(destination.localizedDisplayName, systemImage: destination.iconName)
                                 .tag(destination)
                         }
                     }
                     
                     // タグ自動モード
-                    Picker("AIタグ提案", selection: $viewModel.tagAutoMode) {
+                    Picker(L10n.Settings.aiTagSuggestion, selection: $viewModel.tagAutoMode) {
                         ForEach(TagAutoMode.allCases, id: \.self) { mode in
-                            Text(mode.displayName)
+                            Text(mode.localizedDisplayName)
                                 .tag(mode)
                         }
                     }
                     
                     // テンプレート判別モード
-                    Picker("AIテンプレート判別", selection: $viewModel.templateSuggestionMode) {
+                    Picker(L10n.Settings.aiTemplateDetection, selection: $viewModel.templateSuggestionMode) {
                         ForEach(TemplateSuggestionMode.allCases, id: \.self) { mode in
-                            Text(mode.displayName)
+                            Text(mode.localizedDisplayName)
                                 .tag(mode)
                         }
                     }
                 } header: {
-                    Text("一般")
+                    Text(L10n.Settings.general)
                 } footer: {
                     VStack(alignment: .leading, spacing: 8) {
                         // タグ提案の説明
                         switch viewModel.tagAutoMode {
                         case .autoAdopt:
-                            Text("🏷️ AIが認識したタグを自動で採用。不要なら×で削除。")
+                            Text(L10n.Settings.TagMode.Description.autoAdopt)
                         case .suggestOnly:
-                            Text("🏷️ タグを提案表示。タップで採用。")
+                            Text(L10n.Settings.TagMode.Description.suggestOnly)
                         case .off:
-                            Text("🏷️ タグ提案を表示しません。")
+                            Text(L10n.Settings.TagMode.Description.off)
                         }
                         
                         // テンプレート判別の説明
                         switch viewModel.templateSuggestionMode {
                         case .off:
-                            Text("📋 テンプレート判別を使用しません。")
+                            Text(L10n.Settings.TemplateMode.Description.off)
                         case .suggestOnly:
-                            Text("📋 入力内容から「タスク」か「ノート」かを判別し、バナーで送信先を提案。")
+                            Text(L10n.Settings.TemplateMode.Description.suggestOnly)
                         case .autoSwitch:
-                            Text("📋 AIが自動で送信先を切り替えます。")
+                            Text(L10n.Settings.TemplateMode.Description.autoSwitch)
                         }
                     }
                 }
                 
                 // フィードバック設定
                 Section {
-                    Toggle("触覚フィードバック", isOn: $viewModel.hapticEnabled)
-                    Toggle("サウンド", isOn: $viewModel.soundEnabled)
+                    Toggle(L10n.Settings.hapticFeedback, isOn: $viewModel.hapticEnabled)
+                    Toggle(L10n.Settings.sound, isOn: $viewModel.soundEnabled)
                 } header: {
-                    Text("フィードバック")
+                    Text(L10n.Settings.feedback)
                 }
                 
                 // ストリーク設定
@@ -102,7 +201,7 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "flame.fill")
                                 .foregroundStyle(.orange)
-                            Text("ストリーク表示")
+                            Text(L10n.Settings.streakDisplay)
                         }
                     }
                     
@@ -111,31 +210,31 @@ struct SettingsView: View {
                             HStack {
                                 Image(systemName: "bell.fill")
                                     .foregroundStyle(.blue)
-                                Text("リマインダー通知")
+                                Text(L10n.Settings.streakReminder)
                             }
                         }
                         
                         // 現在のストリーク情報
                         HStack {
-                            Text("現在のストリーク")
+                            Text(L10n.Streak.current)
                             Spacer()
                             HStack(spacing: 4) {
                                 Image(systemName: StreakManager.shared.streakIcon)
                                     .foregroundStyle(.orange)
-                                Text("\(StreakManager.shared.currentStreak)日")
+                                Text(L10n.Streak.days(StreakManager.shared.currentStreak))
                                     .fontWeight(.semibold)
                             }
                         }
                         
                         HStack {
-                            Text("最長記録")
+                            Text(L10n.Streak.longest)
                             Spacer()
-                            Text("\(StreakManager.shared.longestStreak)日")
+                            Text(L10n.Streak.days(StreakManager.shared.longestStreak))
                                 .foregroundStyle(.secondary)
                         }
                         
                         HStack {
-                            Text("総メモ数")
+                            Text(L10n.Streak.total)
                             Spacer()
                             Text("\(StreakManager.shared.totalMemos)")
                                 .foregroundStyle(.secondary)
@@ -143,16 +242,16 @@ struct SettingsView: View {
                     }
                 } header: {
                     HStack {
-                        Text("ストリーク")
+                        Text(L10n.Settings.streak)
                         Spacer()
                         if StreakManager.shared.hasSentMemoToday {
-                            Label("今日完了", systemImage: "checkmark.circle.fill")
+                            Label(L10n.Settings.todayComplete, systemImage: "checkmark.circle.fill")
                                 .font(.caption2)
                                 .foregroundStyle(.green)
                         }
                     }
                 } footer: {
-                    Text("毎日メモを送信して連続記録を伸ばそう！リマインダーをオンにすると、夜8時に今日のメモを送るよう通知します。")
+                    Text(L10n.Streak.encouragement)
                 }
                 
                 // ローカルAI設定
@@ -161,15 +260,15 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "brain.head.profile")
                                 .foregroundStyle(.purple)
-                            Text("ローカルAI優先")
+                            Text(L10n.Settings.localAIPriority)
                         }
                     }
                 } header: {
                     HStack {
-                        Text("Apple Intelligence")
+                        Text(L10n.Settings.appleIntelligence)
                         Spacer()
                         if viewModel.localAIEnabled {
-                            Label("デバイス上", systemImage: "lock.shield.fill")
+                            Label(L10n.Settings.onDevice, systemImage: "lock.shield.fill")
                                 .font(.caption2)
                                 .foregroundStyle(.green)
                         }
@@ -180,13 +279,13 @@ struct SettingsView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "checkmark.shield.fill")
                                     .foregroundStyle(.green)
-                                Text("タグ提案はデバイス上で処理されています")
+                                Text(L10n.Settings.localAIPrivacy)
                             }
                             .font(.caption)
                             
-                            Text("🧠 高精度NLP（品詞解析・感情分析・固有表現抽出）でタグを提案。オフラインでも動作します。")
+                            Text(L10n.Settings.localAIEnabledDescription)
                         } else {
-                            Text("💡 キーワードベースの軽量処理のみ。バッテリー消費を抑えます。")
+                            Text(L10n.Settings.localAIDisabledDescription)
                         }
                     }
                 }
@@ -194,12 +293,12 @@ struct SettingsView: View {
                 // Notion設定
                 Section {
                     SecureInputField(
-                        title: "API キー",
+                        title: L10n.Settings.apiKey,
                         text: $viewModel.notionAPIKey,
-                        placeholder: "secret_..."
+                        placeholder: L10n.Settings.Placeholder.secret
                     )
                     
-                    TextField("データベース ID", text: $viewModel.notionDatabaseId)
+                    TextField(L10n.Settings.databaseId, text: $viewModel.notionDatabaseId)
                         .textContentType(.none)
                         .autocorrectionDisabled()
                     
@@ -217,7 +316,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     HStack {
-                        Text("Notion")
+                        Text(L10n.Settings.notion)
                         Spacer()
                         if viewModel.isNotionConfigured {
                             Image(systemName: "checkmark.circle.fill")
@@ -226,18 +325,18 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    Text("Notion インテグレーションを作成し、データベースへのアクセスを許可してください。")
+                    Text(L10n.Settings.IntegrationDescription.notion)
                 }
                 
                 // Todoist設定
                 Section {
                     SecureInputField(
-                        title: "API トークン",
+                        title: L10n.Settings.apiToken,
                         text: $viewModel.todoistAPIKey,
-                        placeholder: "APIトークンを入力"
+                        placeholder: L10n.Settings.Placeholder.apiToken
                     )
                     
-                    TextField("プロジェクト ID（オプション）", text: $viewModel.todoistProjectId)
+                    TextField(L10n.Settings.projectId, text: $viewModel.todoistProjectId)
                         .textContentType(.none)
                         .autocorrectionDisabled()
                     
@@ -255,7 +354,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     HStack {
-                        Text("Todoist")
+                        Text(L10n.Settings.todoist)
                         Spacer()
                         if viewModel.isTodoistConfigured {
                             Image(systemName: "checkmark.circle.fill")
@@ -264,18 +363,18 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    Text("Todoist の設定 > 連携 > 開発者 から API トークンを取得してください。")
+                    Text(L10n.Settings.IntegrationDescription.todoist)
                 }
                 
                 // Slack設定
                 Section {
                     SecureInputField(
-                        title: "Bot Token",
+                        title: L10n.Settings.botToken,
                         text: $viewModel.slackBotToken,
-                        placeholder: "xoxb-..."
+                        placeholder: L10n.Settings.Placeholder.xoxb
                     )
                     
-                    TextField("チャンネル ID", text: $viewModel.slackChannelId)
+                    TextField(L10n.Settings.channelId, text: $viewModel.slackChannelId)
                         .textContentType(.none)
                         .autocorrectionDisabled()
                     
@@ -293,7 +392,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     HStack {
-                        Text("Slack")
+                        Text(L10n.Settings.slack)
                         Spacer()
                         if viewModel.isSlackConfigured {
                             Image(systemName: "checkmark.circle.fill")
@@ -302,18 +401,18 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    Text("Slack App を作成し、Bot Token Scopes に chat:write と channels:read を追加してください。チャンネルID は右クリック > リンクをコピー から取得できます。")
+                    Text(L10n.Settings.IntegrationDescription.slack)
                 }
                 
                 // Reflect設定
                 Section {
                     SecureInputField(
-                        title: "API キー",
+                        title: L10n.Settings.apiKey,
                         text: $viewModel.reflectAPIKey,
-                        placeholder: "APIキーを入力"
+                        placeholder: L10n.Settings.Placeholder.apiKey
                     )
                     
-                    TextField("Graph ID", text: $viewModel.reflectGraphId)
+                    TextField(L10n.Settings.graphId, text: $viewModel.reflectGraphId)
                         .textContentType(.none)
                         .autocorrectionDisabled()
                     
@@ -333,7 +432,7 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "brain.head.profile")
                             .foregroundStyle(.purple)
-                        Text("Reflect")
+                        Text(L10n.Settings.reflect)
                         Spacer()
                         if viewModel.isReflectConfigured {
                             Image(systemName: "checkmark.circle.fill")
@@ -342,12 +441,12 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    Text("Reflect の Settings > API から API キーを取得。Graph ID は URL (reflect.app/g/xxxxx) の xxxxx 部分です。Daily Note に追記されます。")
+                    Text(L10n.Settings.IntegrationDescription.reflect)
                 }
                 
                 // Email to Self設定
                 Section {
-                    TextField("メールアドレス", text: $viewModel.emailToSelfAddress)
+                    TextField(L10n.Settings.emailAddress, text: $viewModel.emailToSelfAddress)
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                         .autocorrectionDisabled()
@@ -356,7 +455,7 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "envelope")
                             .foregroundStyle(.blue)
-                        Text("Email to Self")
+                        Text(L10n.Settings.emailToSelf)
                         Spacer()
                         if viewModel.isEmailConfigured {
                             Image(systemName: "checkmark.circle.fill")
@@ -366,12 +465,12 @@ struct SettingsView: View {
                     }
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("メモを自分宛てにメール送信します。デバイスのメールアプリが起動します。")
+                        Text(L10n.Settings.IntegrationDescription.email)
                         if !EmailService.shared.canSendEmail() {
                             HStack {
                                 Image(systemName: "exclamationmark.triangle.fill")
                                     .foregroundStyle(.orange)
-                                Text("メール送信機能が利用できません")
+                                Text(L10n.Settings.IntegrationDescription.emailNotAvailable)
                             }
                             .font(.caption)
                         }
@@ -386,7 +485,7 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "questionmark.circle.fill")
                                 .foregroundStyle(.blue)
-                            Text("連携ガイド & ヘルプ")
+                            Text(L10n.Settings.helpAndGuide)
                                 .foregroundStyle(.primary)
                             Spacer()
                             Image(systemName: "chevron.right")
@@ -394,10 +493,73 @@ struct SettingsView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    
+                    // サポートメール
+                    Link(destination: URL(string: "mailto:support@33dept.com")!) {
+                        HStack {
+                            Image(systemName: "envelope.fill")
+                                .foregroundStyle(.green)
+                            Text(L10n.Settings.contactSupport)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 } header: {
-                    Text("サポート")
+                    Text(L10n.Settings.support)
                 } footer: {
-                    Text("各サービスの連携方法やトラブルシューティングを確認できます。")
+                    Text(L10n.Settings.helpDescription)
+                }
+                
+                // 法的情報
+                Section {
+                    // プライバシーポリシー
+                    Link(destination: URL(string: "https://berry-ginger-17d.notion.site/MemoFlow-Privacy-Policy-2dd2b283eb4880c68d53c040ed5ab3d6")!) {
+                        HStack {
+                            Image(systemName: "hand.raised.fill")
+                                .foregroundStyle(.blue)
+                            Text(L10n.Settings.privacyPolicy)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    // 利用規約
+                    Link(destination: URL(string: "https://berry-ginger-17d.notion.site/MemoFlow-Terms-Conditions-2dd2b283eb4880569e30e3f652d415b6")!) {
+                        HStack {
+                            Image(systemName: "doc.text.fill")
+                                .foregroundStyle(.orange)
+                            Text(L10n.Settings.termsOfUse)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    // サブスクリプション管理（プレミアムユーザーまたは有効なサブスク保持者のみ表示）
+                    if purchaseManager.isPremium, let managementURL = purchaseManager.managementURL {
+                        Link(destination: managementURL) {
+                            HStack {
+                                Image(systemName: "creditcard.fill")
+                                    .foregroundStyle(.purple)
+                                Text(L10n.Settings.cancelSubscription)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                } header: {
+                    Text(L10n.Settings.legal)
                 }
                 
                 // リセット
@@ -405,35 +567,43 @@ struct SettingsView: View {
                     Button(role: .destructive) {
                         viewModel.resetAllSettings()
                     } label: {
-                        Text("すべての設定をリセット")
+                        Text(L10n.Settings.resetAll)
                     }
                 }
                 
                 // バージョン情報
                 Section {
                     HStack {
-                        Text("バージョン")
+                        Text(L10n.Common.version)
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                             .foregroundStyle(.secondary)
                     }
                 } footer: {
-                    Text("MemoFlow - GTD Capture Hub")
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 20)
+                    VStack(spacing: 8) {
+                        Text(L10n.App.description)
+                        Text(L10n.Settings.copyright)
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 20)
                 }
             }
-            .navigationTitle("設定")
+            .navigationTitle(L10n.Settings.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("完了") {
+                    Button(L10n.Common.done) {
                         dismiss()
                     }
                 }
             }
             .sheet(isPresented: $showHelp) {
                 HelpView()
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
             }
         }
     }
@@ -478,7 +648,7 @@ struct ConnectionTestButton: View {
     var body: some View {
         Button(action: onTest) {
             HStack {
-                Text("接続テスト")
+                Text(L10n.Settings.connectionTest)
                 
                 Spacer()
                 
@@ -498,23 +668,48 @@ struct ConnectionTestButton: View {
 // MARK: - Theme Picker
 struct ThemePicker: View {
     @Binding var selectedTheme: AppTheme
+    @Binding var showPaywall: Bool
+    @State private var purchaseManager = PurchaseManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("テーマ")
+            Text(L10n.Settings.theme)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
+            // 無料テーマ
             HStack(spacing: 12) {
-                ForEach(AppTheme.allCases) { theme in
+                ForEach(AppTheme.freeThemes) { theme in
                     ThemeOption(
                         theme: theme,
                         isSelected: selectedTheme == theme,
+                        isPremiumLocked: false,
                         onTap: {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                 selectedTheme = theme
                             }
                             HapticManager.shared.lightTap()
+                        }
+                    )
+                }
+            }
+            
+            // プレミアムテーマ
+            HStack(spacing: 12) {
+                ForEach(AppTheme.premiumThemes) { theme in
+                    ThemeOption(
+                        theme: theme,
+                        isSelected: selectedTheme == theme,
+                        isPremiumLocked: !purchaseManager.isPremium,
+                        onTap: {
+                            if purchaseManager.isPremium {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    selectedTheme = theme
+                                }
+                                HapticManager.shared.lightTap()
+                            } else {
+                                showPaywall = true
+                            }
                         }
                     )
                 }
@@ -528,6 +723,7 @@ struct ThemePicker: View {
 struct ThemeOption: View {
     let theme: AppTheme
     let isSelected: Bool
+    let isPremiumLocked: Bool
     let onTap: () -> Void
     
     @Environment(\.colorScheme) private var colorScheme
@@ -553,13 +749,23 @@ struct ThemeOption: View {
                             y: 2
                         )
                     
+                    // プレミアムロック
+                    if isPremiumLocked {
+                        Circle()
+                            .fill(.black.opacity(0.4))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.white)
+                    }
+                    
                     Image(systemName: theme.iconName)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(theme == .dark ? .white : .black.opacity(0.7))
                 }
                 
                 // ラベル
-                Text(theme.displayName)
+                Text(theme.localizedDisplayName)
                     .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
                     .foregroundStyle(isSelected ? .primary : .secondary)
                     .lineLimit(1)
@@ -578,11 +784,11 @@ struct FontSizePreview: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("プレビュー")
+            Text(L10n.Settings.preview)
                 .font(.caption)
                 .foregroundStyle(.secondary)
             
-            Text("あいうえお ABC 123")
+            Text(L10n.Settings.previewText)
                 .font(.system(size: fontSize.mainTextSize))
                 .lineSpacing(fontSize.lineSpacing)
                 .padding()
@@ -596,7 +802,13 @@ struct FontSizePreview: View {
 }
 
 // MARK: - Preview
-#Preview {
+#Preview("Japanese") {
     SettingsView()
+        .previewJapanese()
+}
+
+#Preview("English") {
+    SettingsView()
+        .previewEnglish()
 }
 
